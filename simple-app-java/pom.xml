@@ -23,8 +23,8 @@
    <build>
     <plugins>
         <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
+            <groupId>com.example</groupId>
+            <artifactId>simple-app</artifactId>
             <configuration>
                 <mainClass>com.example.simpleapp.Application</mainClass> 
             </configuration>

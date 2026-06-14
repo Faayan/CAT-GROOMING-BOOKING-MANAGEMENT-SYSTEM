@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <properties>
         <java.version>17</java.version>
+        <start-class>com.example.simpleapp.Application</start-class>
     </properties>
     <dependencies>
         <dependency>
@@ -24,11 +25,7 @@
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.example.simpleapp.Application</mainClass>
-                    <layout>JAR</layout>
-                </configuration>
+                <artifactId>spring-boot-maven-plugin</artifactId>             
             </plugin>
         </plugins>
     </build>

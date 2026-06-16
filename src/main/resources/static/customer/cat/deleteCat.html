@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meowy Groom - Delete Cat Profile</title>
+    <style>
+        :root {
+            --sidebar-width: 256px;
+            --purple-dark: #4c1d95; /* bg-purple-900 */
+            --pink-bg: #fdf2f8; /* bg-pink-100/50 */
+            --red-primary: #ff0000;
+            --gray-bg: #e5e7eb;
+            --text-gray: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Header --- */
+        .top-nav {
+            height: 64px;
+            background-color: #58435c;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* --- Sidebar Layout --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid #fbcfe8;
+            height: calc(100vh - 64px);
+            position: fixed;
+            top: 64px;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 0;
+        }
+
+        .account-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px 24px;
+            border-bottom: 1px solid #fbcfe8;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background: var(--purple-dark);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .nav-items {
+            flex: 1;
+            padding: 16px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            background: var(--purple-dark);
+            color: white;
+        }
+
+        .logout {
+            padding: 16px 24px;
+            color: #dc2626;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* --- Blurred Background Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 64px;
+            padding: 40px;
+            filter: blur(4px); /* Simulating the backdrop-blur-sm in the image */
+        }
+
+        /* --- Modal Overlay --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 448px; /* max-w-md */
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .alert-container {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .alert-icon {
+            width: 48px;
+            height: 48px;
+            background: #fee2e2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc2626;
+            font-size: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        /* --- Content Section --- */
+        .info-box {
+            background: white;
+            margin-bottom: 24px;
+        }
+
+        .confirm-text {
+            color: #374151;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .cat-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: var(--text-gray);
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        /* --- Warning Box --- */
+        .warning-box {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #991b1b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* --- Buttons --- */
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .btn-delete {
+            background: var(--red-primary);
+            color: white;
+        }
+
+        .close-x {
+            color: #9ca3af;
+            font-size: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav"></div>
+    <aside class="sidebar">
+        <div class="account-badge">
+            <div class="icon-box">🐱</div>
+            <div>
+                <h2 style="color: var(--purple-dark); font-weight: 700; font-size: 16px;">Staff Account</h2>
+            </div>
+        </div>
+        <nav class="nav-items">
+            <a href="#" class="nav-item">Profile</a>
+            <a href="#" class="nav-item active">Cat Information</a>
+            <a href="#" class="nav-item">Appointments</a>
+            <a href="#" class="nav-item">Confirm Bookings</a>
+            <a href="#" class="nav-item">Payment/Invoice</a>
+            <a href="#" class="nav-item">Receipts</a>
+        </nav>
+        <div class="logout">Log Out</div>
+    </aside>
+
+    <main class="main-content">
+        <h1>Cat Information</h1>
+    </main>
+
+    <div class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="alert-container">
+                    <div class="alert-icon">⚠️</div>
+                    <div>
+                        <div class="modal-title">Delete Cat Profile</div>
+                        <div class="modal-subtitle">This action cannot be undone</div>
+                    </div>
+                </div>
+                <button class="close-x">✕</button>
+            </div>
+
+            <div class="info-box">
+                <p class="confirm-text">Are you sure you want to delete <strong>Whiskers</strong>'s profile?</p>
+                <div class="cat-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Breed:</span>
+                        <span class="detail-value">Persian</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Owner:</span>
+                        <span class="detail-value">Ali Ahmad</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Age:</span>
+                        <span class="detail-value">3 years</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>Warning:</strong> This will permanently delete all cat information, grooming history, and associated records. This action cannot be undone.
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-cancel">Cancel</button>
+                <button class="btn btn-delete">Delete Profile</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

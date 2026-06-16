@@ -1,0 +1,162 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    background:#6B5B6F;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 15px;
+    font-family:'Poppins', sans-serif;
+}
+
+.container{
+    width:100%;
+    max-width:450px;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo{
+    width:80px;
+    height:80px;
+    background:#f9a8d4;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0 auto 15px;
+}
+
+.logo svg{
+    width:45px;
+    height:45px;
+    stroke:#581c87;
+    fill:none;
+    stroke-width:2.5;
+}
+
+.header h1{
+    color:white;
+    font-size:32px;
+    font-weight:600;
+    margin-bottom:5px;
+}
+
+.header p{
+    color:#f3f3f3;
+    font-size:16px;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.field{
+    margin-bottom:18px;
+}
+
+.field label{
+    display:block;
+    margin-bottom:7px;
+    font-size:14px;
+    font-weight:500;
+    color:#333;
+}
+
+.input-wrap{
+    position:relative;
+}
+
+.input-wrap svg{
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+    width:18px;
+    height:18px;
+    stroke:#888;
+    fill:none;
+    stroke-width:2;
+}
+
+.input-wrap input{
+    width:100%;
+    padding:12px 14px 12px 42px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:14px;
+    font-family:'Poppins', sans-serif;
+    outline:none;
+    transition:0.3s;
+}
+
+.input-wrap input:focus{
+    border-color:#7c3aed;
+    box-shadow:0 0 0 3px rgba(124,58,237,0.15);
+}
+
+.btn-row{
+    display:flex;
+    gap:15px;
+    margin-top:10px;
+}
+
+.btn{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:500;
+    font-family:'Poppins', sans-serif;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn-register{
+    background:#7c3aed;
+    color:white;
+}
+
+.btn-register:hover{
+    background:#6d28d9;
+}
+
+.btn-cancel{
+    background:#ef4444;
+    color:white;
+}
+
+.btn-cancel:hover{
+    background:#dc2626;
+}
+
+.login-link{
+    margin-top:25px;
+    text-align:center;
+    border-top:1px solid #e5e7eb;
+    padding-top:20px;
+    font-size:14px;
+    color:#555;
+}
+
+.login-link a{
+    color:#6d28d9;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.login-link a:hover{
+    text-decoration:underline;
+}

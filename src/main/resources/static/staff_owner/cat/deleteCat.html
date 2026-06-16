@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Cat Profile | Meowy Groom</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Dark background overlay */
+        body { 
+            background: rgba(17, 24, 39, 0.6); 
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        /* Modal Box */
+        .modal { 
+            background: white; 
+            padding: 32px; 
+            border-radius: 20px; 
+            max-width: 450px; 
+            width: 90%; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+        }
+
+        /* Modal Header */
+        .header { 
+            display: flex; 
+            gap: 16px; 
+            margin-bottom: 24px; 
+        }
+
+        .icon-box { 
+            background: #fee2e2; 
+            border-radius: 50%; 
+            padding: 12px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-text h3 { 
+            margin: 0; 
+            font-size: 20px; 
+            font-weight: 700; 
+            color: #111827; 
+        }
+
+        .header-text small { 
+            color: #6b7280; 
+            font-size: 14px; 
+        }
+
+        /* Name Highlight Box */
+        .alert-box { 
+            background: #f9fafb; 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            text-align: center;
+            font-size: 16px;
+            color: #374151;
+            border: 1px solid #f3f4f6;
+        }
+
+        .cat-name-highlight {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        /* Info Rows (Breed & Owner) */
+        .info-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 10px 0; 
+            border-bottom: 1px solid #f3f4f6; 
+            font-size: 14px; 
+        }
+
+        .info-label { color: #6b7280; }
+        .info-value { color: #111827; font-weight: 600; }
+
+        /* Warning Box */
+        .warning-box { 
+            background: #fef2f2; 
+            border: 1px solid #fecaca; 
+            color: #991b1b; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-size: 13px; 
+            line-height: 1.5;
+            margin: 24px 0; 
+        }
+
+        /* Buttons */
+        .btn-row { 
+            display: flex; 
+            gap: 12px; 
+        }
+
+        .btn { 
+            flex: 1; 
+            padding: 14px; 
+            border-radius: 10px; 
+            border: none; 
+            font-weight: 600; 
+            font-size: 15px;
+            cursor: pointer; 
+            text-align: center; 
+            text-decoration: none; 
+            transition: all 0.2s;
+        }
+
+        .btn-cancel { 
+            background: #f3f4f6; 
+            color: #374151; 
+        }
+
+        .btn-cancel:hover { background: #e5e7eb; }
+
+        .btn-del { 
+            background: #dc2626; 
+            color: white; 
+        }
+
+        .btn-del:hover { background: #b91c1c; }
+    </style>
+</head>
+<body>
+
+    <div class="modal">
+        <div class="header">
+            <div class="icon-box">
+                <i data-lucide="alert-triangle" style="color:#dc2626; width: 28px; height: 28px;"></i>
+            </div>
+            <div class="header-text">
+                <h3>Delete Cat Profile</h3>
+                <small>This action cannot be undone</small>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            Are you sure you want to delete <span class="cat-name-highlight" id="catName"></span>'s profile?
+        </div>
+
+        <div class="info-row">
+            <span class="info-label">Breed:</span>
+            <span class="info-value" id="catBreed"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Owner:</span>
+            <span class="info-value" id="catOwner"></span>
+        </div>
+
+        <div class="warning-box">
+            <strong>Warning:</strong> This will permanently delete all cat information, grooming history, and associated records. This action cannot be undone.
+        </div>
+
+        <div class="btn-row">
+            <a href="index.html" class="btn btn-cancel">Cancel</a>
+            <button id="confirmDel" class="btn btn-del">Delete</button>
+        </div>
+    </div>
+
+    <script>
+        // Get ID from URL
+        const params = new URLSearchParams(window.location.search);
+        const catId = params.get('id');
+        
+        // Fetch data from LocalStorage
+        let cats = JSON.parse(localStorage.getItem('cats')) || [];
+        const cat = cats.find(c => c.id === catId);
+
+        if (cat) {
+            // Display data on screen
+            document.getElementById('catName').innerText = cat.name;
+            document.getElementById('catBreed').innerText = cat.breed;
+            document.getElementById('catOwner').innerText = cat.ownerName;
+
+            // Delete Logic
+            document.getElementById('confirmDel').onclick = () => {
+                const updatedCats = cats.filter(c => c.id !== catId);
+                localStorage.setItem('cats', JSON.stringify(updatedCats));
+                window.location.href = 'index.html';
+            };
+        } else {
+            // Redirect if ID not found
+            window.location.href = 'index.html';
+        }
+
+        // Render Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

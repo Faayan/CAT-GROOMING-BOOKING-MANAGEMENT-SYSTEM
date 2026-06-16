@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Meowy Groom</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f5f3ff;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 56px; background: #581c87;
+    display: flex; align-items: center;
+    padding: 0 1.5rem; z-index: 100; gap: 0.75rem;
+  }
+  .topbar-logo {
+    width: 32px; 
+    height: 32px;
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .topbar-logo svg { width: 20px; height: 20px; color: #4c1d95; }
+  .topbar h1 { color: #fff; font-size: 1rem; font-weight: 700; }
+
+  /* ── Sidebar ── */
+  aside {
+    width: 260px;
+    background: #fff;
+    border-right: 1px solid #ede9fe;
+    position: fixed; left: 0; top: 56px; bottom: 0;
+    display: flex; flex-direction: column; z-index: 90;
+  }
+
+  .sidebar-header {
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid #ede9fe;
+    flex-shrink: 0; display: flex; align-items: center; gap: 0.75rem;
+  }
+  .sidebar-icon {
+    width: 44px; height: 44px; background: #581c87;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .sidebar-icon svg { width: 26px; height: 26px; color: #fff; }
+  .sidebar-title { font-size: 0.95rem; font-weight: 700; color: #581c87; }
+
+  nav { flex: 1; overflow-y: auto; padding: 0.75rem; }
+  nav::-webkit-scrollbar { width: 4px; }
+  nav::-webkit-scrollbar-thumb { background: #e9d5ff; border-radius: 4px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    width: 100%; padding: 0.7rem 1rem; border-radius: 10px;
+    color: #374151; font-size: 0.875rem; cursor: pointer;
+    border: none; background: transparent; font-family: inherit;
+    text-align: left; transition: background 0.15s, color 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item svg { width: 20px; height: 20px; flex-shrink: 0;
+    fill: none; stroke: currentColor; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round; }
+  .nav-item:hover  { background: #fce7f3; color: #1f2937; }
+  .nav-item.active { background: #581c87; color: #fff; box-shadow: 0 2px 8px rgba(88,28,135,0.25); }
+
+  .logout-area {
+    padding: 0.75rem; border-top: 1px solid #f3f4f6; flex-shrink: 0;
+  }
+  .logout-btn {
+    display: flex; align-items: center; gap: 0.75rem; width: 100%;
+    padding: 0.7rem 1rem; border-radius: 10px; border: none;
+    background: transparent; color: #dc2626; font-size: 0.875rem;
+    font-weight: 500; font-family: inherit; cursor: pointer;
+    text-align: left; transition: background 0.15s;
+  }
+  .logout-btn svg { width: 20px; height: 20px;
+    fill: none; stroke: currentColor; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round; }
+  .logout-btn:hover { background: #fef2f2; }
+
+  /* ── Content iframe — fills everything right of sidebar ── */
+  .content-area {
+    position: fixed;
+    top: 56px; left: 260px; right: 0; bottom: 0;
+  }
+  .content-area iframe {
+    width: 100%; height: 100%; border: none; display: block;
+  }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="/images/meowy logo.JPG" alt="Logo" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" />
+  </div>
+  <h1>Meowy Groom</h1>
+</div>
+
+<!-- Sidebar — never moves -->
+<aside>
+  <div class="sidebar-header">
+    <div class="sidebar-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5c-4 0-7 3-7 7v3l-1 1v2h16v-2l-1-1v-3c0-4-3-7-7-7z"/>
+        <path d="M8 5V3l3 3M16 5V3l-3 3"/>
+        <circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/>
+        <path d="M10 16s1 1.5 2 1.5 2-1.5 2-1.5"/>
+      </svg>
+    </div>
+    <span class="sidebar-title" id="sidebarTitle">My Account</span>
+  </div>
+
+  <nav id="navMenu"></nav>
+
+  <div class="logout-area">
+    <button class="logout-btn" onclick="handleLogout()">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log Out
+    </button>
+  </div>
+</aside>
+
+<!-- Content — your pages load here, sidebar never leaves -->
+<div class="content-area">
+  <iframe id="contentFrame" src="about:blank" title="Page content"></iframe>
+</div>
+
+<script>
+  const ICONS = {
+    user:       `<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+    users:      `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`,
+    cat:        `<svg viewBox="0 0 24 24"><path d="M12 5c-4 0-7 3-7 7v3l-1 1v2h16v-2l-1-1v-3c0-4-3-7-7-7z"/><path d="M8 5V3l3 3M16 5V3l-3 3"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M10 16s1 1.5 2 1.5 2-1.5 2-1.5"/></svg>`,
+    calendar:   `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+    creditcard: `<svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`,
+    receipt:    `<svg viewBox="0 0 24 24"><path d="M4 2v20l3-2 3 2 3-2 3 2 3-2V2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>`,
+    star:       `<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    trending:   `<svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
+  };
+
+  const MENUS = {
+    customer: [
+      { id:'my-profile',       label:'Profile',          icon:'user',       href:'/customer/customerProfile.html' },
+      { id:'my-cats',          label:'Cat Information',  icon:'cat',        href:'/customer/cat/customerCat.html' },
+      { id:'my-appointments',  label:'Appointments',     icon:'calendar',   href:'/customer/appointment/customerAppointment.html' },
+      { id:'book-appointment', label:'Book Appointment', icon:'calendar',   href:'/customer/appointment/checkAvailability.html' },
+      { id:'my-invoices',     label:'Invoices',         icon:'creditcard', href:'/customer/customerInvoice.html' },
+      { id:'my-receipts',      label:'Receipts',         icon:'receipt',    href:'/customer/customerReceipt.html' },
+    ],
+    staff: [
+      { id:'user-info',        label:'Profile',          icon:'users',      href:'/staff_owner/profile/staffManagement.html' },
+      { id:'cat-info',         label:'Cat Information',  icon:'cat',        href:'/staff_owner/cat/catInformation.html' },
+      { id:'appointment',      label:'Appointments',     icon:'calendar',   href:'/staff_owner/appointment/appointmentManagement.html' },
+      { id:'approve-bookings', label:'Confirm Bookings', icon:'star',       href:'/staff_owner/confirmBooking/confirmBooking.html' },
+      { id:'payment',          label:'Payment/Invoice',  icon:'creditcard', href:'/staff_owner/invoice/mainInvoice.html' },
+      { id:'receipt',          label:'Receipts',         icon:'receipt',    href:'/staff_owner/receipt/mainReceipt.html' },
+    ],
+    owner: [
+      { id:'user-info',        label:'Profile',          icon:'users',      href:'/staff_owner/profile/ownerManagement.html' },
+      { id:'cat-info',         label:'Cat Information',  icon:'cat',        href:'/staff_owner/cat/catInformation.html' },
+      { id:'appointment',      label:'Appointments',     icon:'calendar',   href:'/staff_owner/appointment/appointmentManagement.html' },
+      { id:'approve-bookings', label:'Confirm Bookings', icon:'star',       href:'/staff_owner/confirmBooking/confirmBooking.html' },
+      { id:'sales-report',     label:'Sales Report',     icon:'trending',   href:'/staff_owner/report/salesReport.html' },
+      { id:'payment',          label:'Payment/Invoice',  icon:'creditcard', href:'/staff_owner/invoice/mainInvoice.html' },
+      { id:'receipt',          label:'Receipts',         icon:'receipt',    href:'/staff_owner/receipt/mainReceipt.html' },
+    ]
+  };
+
+  const TITLES = { customer:'My Account', staff:'Staff Account', owner:'Owner Account' };
+
+  let role       = sessionStorage.getItem('userRole') || 'customer';
+  let activePage = '';
+
+  // Called by each nav button — swaps iframe src and updates active highlight
+  function navigate(id, href) {
+    activePage = id;
+    document.getElementById('contentFrame').src = href;
+    renderNav();
+  }
+
+  function renderNav() {
+    const items = MENUS[role] || [];
+    document.getElementById('navMenu').innerHTML = items.map(item => `
+      <button class="nav-item ${activePage === item.id ? 'active' : ''}"
+              onclick="navigate('${item.id}', '${item.href}')">
+        ${ICONS[item.icon] || ''}
+        <span>${item.label}</span>
+      </button>
+    `).join('');
+    document.getElementById('sidebarTitle').textContent = TITLES[role];
+  }
+
+  function handleLogout() {
+    if (confirm('Are you sure you want to log out?')) {
+      sessionStorage.removeItem('userRole');
+      window.location.href = 'home.html';
+    }
+  }
+
+  // On load: show the first menu item's page automatically
+  (function init() {
+    const items = MENUS[role] || [];
+    if (items.length) {
+      activePage = items[0].id;
+      document.getElementById('contentFrame').src = items[0].href;
+    }
+    renderNav();
+  })();
+</script>
+</body>
+</html>

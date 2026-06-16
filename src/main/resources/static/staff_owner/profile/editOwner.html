@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit User – Meowy Groom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/profilePage.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="content-wrap">
+
+      <!-- Back -->
+      <div class="back-link" onclick="history.back()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+        </svg>
+            Back
+        </div>
+
+      <!-- Card -->
+      <div class="view-card">
+
+        <div class="card-title">Edit User Account</div>
+        <div class="card-subtitle">Update user information</div>
+
+        <hr class="v-divider" />
+
+        <form class="edit-form">
+
+            <!-- Full Name -->
+            <div class="field-group">
+            <label class="field-label">Full Name *</label>
+
+            <div class="input-wrap">
+                <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+                </svg>
+
+                <input type="text" id="vv-fullname" value="John Doe">
+            </div>
+            </div>
+
+            <!-- Username -->
+            <div class="field-group">
+            <label class="field-label">Username</label>
+
+            <div class="input-wrap disabled-input">
+                <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+                </svg>
+
+                <input type="text" id="vv-username" value="@johndoe" disabled>
+
+                <span class="input-note">(Cannot be changed)</span>
+            </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="field-group">
+            <label class="field-label">Phone Number *</label>
+
+            <div class="input-wrap">
+                <svg viewBox="0 0 24 24">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.61 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.09a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+
+                <input type="text" id="vv-phone" value="+60 12-345 6789">
+            </div>
+            </div>
+
+            <!-- Email -->
+            <div class="field-group">
+            <label class="field-label">Email Address *</label>
+
+            <div class="input-wrap">
+                <svg viewBox="0 0 24 24">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+                </svg>
+
+                <input type="email" id="vv-email" value="johndoe@gmail.com">
+            </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-row">
+            <button type="button" class="save-btn" onclick="window.location.href='ownerManagement.html'">
+                Save
+            </button>
+
+            <button type="button" class="cancel-btn" onclick="history.back()">
+                Cancel
+            </button>
+            </div>
+
+        </form>
+
+        </div>
+    </div><!-- /.content-wrap -->
+  </main>
+
+</div><!-- /.layout -->
+
+<script>
+  // Sample user data — replace with real data source as needed
+  const user = {
+    id: 'USR001',
+    fullname: 'John Doe',
+    username: 'johndoe',
+    email: 'johndoe@gmail.com',
+    phone: '+60 12-345 6789',
+    role: 'customer',
+    createdAt: '2024-01-15'
+  };
+
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+  document.getElementById('vv-name').textContent     = user.fullname;
+  document.getElementById('vv-uname').textContent    = '@' + user.username;
+  document.getElementById('vv-fullname').textContent = user.fullname;
+  document.getElementById('vv-username').textContent = '@' + user.username;
+  document.getElementById('vv-phone').textContent    = user.phone;
+  document.getElementById('vv-email').textContent    = user.email;
+  document.getElementById('vv-role').textContent     = cap(user.role);
+  document.getElementById('vv-id').textContent       = user.id;
+  document.getElementById('vv-type').textContent     = user.role.toUpperCase();
+  document.getElementById('vv-created').textContent  = new Date(user.createdAt).toLocaleDateString('en-MY', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  const pill = document.getElementById('vv-pill');
+  pill.textContent = cap(user.role);
+  pill.className = 'vrole-pill ' + user.role;
+</script>
+
+</body>
+</html>

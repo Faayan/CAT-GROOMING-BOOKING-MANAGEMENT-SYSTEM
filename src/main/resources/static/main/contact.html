@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us – Meowy Groom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #6B5B6F;
+      --pink-footer: #F5C2E0;
+      --pink-card:   #f9a8d4;
+      --pink-btn:    #f9a8d4;
+      --purple-dark: #581c87;
+      --white:       #ffffff;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════
+       HEADER
+    ══════════════════════════ */
+    header {
+      padding: 1rem 3rem;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: #6B5B6F;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .brand-text h1 {
+      color: var(--white);
+      font-size: 1.7rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      color: rgba(255,255,255,.88);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--white);
+      font-family: 'Nunito', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: color .2s;
+      white-space: nowrap;
+    }
+
+    .nav-btn:hover { color: var(--pink-card); }
+    .nav-btn.active { color: var(--pink-card); }
+
+    .btn-login {
+      padding: .5rem 1.6rem;
+      background: var(--pink-btn);
+      color: var(--purple-dark);
+      border: none;
+      border-radius: 9999px;
+      font-family: 'Nunito', sans-serif;
+      font-size: .95rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .2s;
+      text-decoration: none;
+    }
+
+    .btn-login:hover { background: #f472b6; }
+
+    /* ══════════════════════════
+       MAIN
+    ══════════════════════════ */
+    main {
+      flex: 1;
+      padding: 3rem 2rem;
+    }
+
+    .main-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* Page title */
+    .page-title {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .page-title h2 {
+      color: var(--white);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      margin-bottom: .75rem;
+    }
+
+    .page-title p {
+      color: rgba(255,255,255,.88);
+      font-size: 1.05rem;
+      font-weight: 600;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* Contact form card */
+    .form-card {
+      background: rgba(255,255,255,.95);
+      border-radius: 1.25rem;
+      padding: 2.25rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,.18);
+    }
+
+    .form-card h3 {
+      color: var(--purple-dark);
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: .4rem;
+    }
+
+    .form-card .subtext {
+      color: #4b5563;
+      font-size: .93rem;
+      font-weight: 600;
+      margin-bottom: 1.75rem;
+    }
+
+    /* Form fields */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: .88rem;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: .5rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: .8rem 1rem;
+      border: 1.5px solid #d1d5db;
+      border-radius: .6rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      color: #111827;
+      background: #fff;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #9ca3af;
+      font-weight: 500;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 3px rgba(124,58,237,.15);
+    }
+
+    .form-group textarea {
+      resize: none;
+      height: 140px;
+    }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: .85rem;
+      background: var(--purple-dark);
+      color: var(--white);
+      border: none;
+      border-radius: .6rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .2s, box-shadow .2s;
+      margin-top: .25rem;
+    }
+
+    .btn-submit:hover {
+      background: #6d28d9;
+      box-shadow: 0 8px 20px rgba(109,40,217,.35);
+    }
+
+    /* Toast notification */
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #16a34a;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      padding: .85rem 1.5rem;
+      border-radius: .75rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      z-index: 9999;
+      animation: fadeInUp .3s ease;
+    }
+
+    .toast.show { display: block; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════
+       FOOTER
+    ══════════════════════════ */
+    footer {
+      background: var(--pink-footer);
+      padding: 3rem 2rem;
+      margin-top: 3rem;
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+
+    .footer-inner h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--purple-dark);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Contact column */
+    .contact-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .9rem;
+    }
+
+    .contact-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: .65rem;
+      color: var(--purple-dark);
+      font-weight: 600;
+      font-size: .95rem;
+      line-height: 1.55;
+    }
+
+    .contact-list li svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: var(--purple-dark);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Brand centre */
+    .footer-brand {
+      text-align: center;
+    }
+
+    .footer-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+      margin-top: -1rem;
+    }
+
+    .footer-brand-row img {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .footer-brand-row span {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: var(--purple-dark);
+    }
+
+    .footer-brand p {
+      color: var(--purple-dark);
+      font-size: .93rem;
+      font-weight: 600;
+      line-height: 1.7;
+      max-width: 18rem;
+      margin: 0 auto;
+      white-space: nowrap;
+    }
+
+    .footer-copy {
+      color: rgba(88,28,135,.55);
+      font-size: .78rem;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      white-space: nowrap;
+    }
+
+    /* Social icons */
+    .social-row {
+      display: flex;
+      gap: .85rem;
+      padding-left: 5rem;
+    }
+
+    .social-row a {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+
+    .social-row a:hover { transform: scale(1.12); }
+
+    .social-row a svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+    }
+
+    .footer-social h3 {
+      margin-top: -0.2rem;
+      padding-left: 6.5rem;
+    }
+
+    .s-fb { background: #1877f2; }
+    .s-ig { background: linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); }
+    .s-tt { background: #000; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════
+     HEADER
+════════════════════════ -->
+<header>
+  <div class="header-inner">
+
+    <div class="brand">
+      <!-- Replace images/logo.png with your actual logo path -->
+      <img src="../images/meowy logo.JPG" alt="Meowy Groom logo" />
+      <div class="brand-text">
+        <h1>Meowy Groom</h1>
+        <p>Cat Grooming Booking Management System</p>
+      </div>
+    </div>
+
+    <nav>
+      <a href="home.html" class="nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            width="18" height="18">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        Home
+      </a>
+
+      <a href="aboutUs.html" class="nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            width="18" height="18">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        About Us
+      </a>
+
+      <a href="contact.html" class="nav-btn active">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            width="18" height="18">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07
+                  A19.5 19.5 0 0 1 4.36 12a19.79 19.79 0 0 1-3.07-8.67
+                  A2 2 0 0 1 3.11 1.18h3a2 2 0 0 1 2 1.72
+                  c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11
+                  L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27
+                  a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7
+                  A2 2 0 0 1 21 16.92z"/>
+        </svg>
+          Contact
+      </a>
+
+      <a href="https://tinyurl.com/yf72ex26" target="_blank" rel="noopener noreferrer" class="nav-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              width="18" height="18">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+          </svg>
+          Feedback
+      </a>
+
+      <a href="loginPage.html" class="btn-login">Login</a>
+    </nav>
+
+  </div>
+</header>
+
+
+<!-- ════════════════════════
+     MAIN
+════════════════════════ -->
+<main>
+  <div class="main-inner">
+
+    <!-- Page heading -->
+    <div class="page-title">
+      <h2>Contact Us</h2>
+      <p>Get in touch with us for any inquiries about our grooming services or to book an appointment.</p>
+    </div>
+
+    <!-- Contact form card -->
+    <div class="form-card">
+      <h3>Send us a Message</h3>
+      <p class="subtext">Fill out the form below and we'll get back to you soon.</p>
+
+      <form id="contactForm" onsubmit="handleSubmit(event)">
+
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name"
+                 placeholder="Your full name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email"
+                 placeholder="your.email@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone"
+                 placeholder="+60 12-345 6789" />
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject"
+                 placeholder="How can we help you?" />
+        </div>
+
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message"
+                    placeholder="Tell us more about your inquiry..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Send Message</button>
+
+      </form>
+    </div>
+
+  </div>
+</main>
+
+
+<!-- ════════════════════════
+     FOOTER
+════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+
+    <!-- Contact Us -->
+    <div>
+      <h3>Contact Us</h3>
+      <ul class="contact-list">
+        <li>
+          <svg viewBox="0 0 24 24">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07
+                     A19.5 19.5 0 0 1 4.36 12a19.79 19.79 0 0 1-3.07-8.67
+                     A2 2 0 0 1 3.11 1.18h3a2 2 0 0 1 2 1.72
+                     c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11
+                     L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27
+                     a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7
+                     A2 2 0 0 1 21 16.92z"/>
+          </svg>
+          +60 10-774 5512
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          support@meowygroom.com
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24">
+            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>G9, Jalan KNMP 2A, 2, Kompleks Niaga<br/>Melaka Perdana, 75450 Ayer Keroh, Melaka</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Brand -->
+    <div class="footer-brand">
+      <div class="footer-brand-row">
+        <img src="../images/meowy logo.JPG" alt="Meowy Groom" />
+        <span>Meowy Groom</span>
+      </div>
+      <p>
+        Safe, Clean, and Stress-Free Grooming.<br/>
+        Handled with care and professionalism<br/>
+        you can trust.
+      </p>
+      <p class="footer-copy">© 2026 Meowy Groom. All rights reserved.</p>
+    </div>
+
+    <!-- Follow Us -->
+    <div class="footer-social">
+      <h3>Follow Us</h3>
+      <div class="social-row">
+        <a href="https://www.facebook.com/meowygroom" target="_blank" rel="noopener noreferrer"
+           class="s-fb" aria-label="Facebook">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+          </svg>
+        </a>
+        <a href="https://www.instagram.com/meowygroom" target="_blank" rel="noopener noreferrer"
+           class="s-ig" aria-label="Instagram">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465
+                     .66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772
+                     c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122
+                     0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428
+                     a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153
+                     c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06
+                     -2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465
+                     a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772
+                     c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12
+                     c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428
+                     a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525
+                     c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2z
+                     m0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10z
+                     m6.5-.25a1.25 1.25 0 0 0-2.5 0 1.25 1.25 0 0 0 2.5 0z
+                     M12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+          </svg>
+        </a>
+        <a href="https://www.tiktok.com/@meowygroom" target="_blank" rel="noopener noreferrer"
+           class="s-tt" aria-label="TikTok">
+          <svg viewBox="0 0 24 24">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67
+                     a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64
+                     2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05
+                     A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7
+                     a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<!-- Toast notification -->
+<div class="toast" id="toast">✓ Message sent successfully!</div>
+
+<script>
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    // Show success toast
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+
+    // Reset form
+    e.target.reset();
+  }
+
+  function handleLogin() {
+    window.location.href = 'login.html';
+  }
+</script>
+
+</body>
+</html>

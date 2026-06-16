@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Meowy Groom</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #6B5B6F; /* Dark purple background from your React code */
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-card-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Header & Logo */
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.logo-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background-color: #f9a8d4; /* pink-300 */
+    border-radius: 16px;
+    margin-bottom: 15px;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    color: #4c1d95; /* purple-900 */
+}
+
+/* Card Style */
+.login-card {
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #4b5563;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: #9ca3af;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 12px 12px 42px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: #a855f7; /* purple-500 */
+    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+}
+
+/* Footer Links */
+.form-footer-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #4b5563;
+}
+
+.form-footer-links a {
+    color: #7e22ce;
+    text-decoration: none;
+}
+
+/* Button */
+.btn-login {
+    width: 100%;
+    background-color: #4c1d95;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-login:hover {
+    background-color: #5b21b6;
+}
+
+/* Demo Credentials Box */
+.demo-box {
+    margin-top: 24px;
+    background: linear-gradient(to bottom right, #faf5ff, #fdf2f8);
+    border: 1px solid #e9d5ff;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.demo-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #4c1d95;
+    margin-bottom: 12px;
+}
+
+.demo-item {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #f3e8ff;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.role-label {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.customer .role-label { color: #1d4ed8; }
+.staff .role-label { color: #15803d; }
+
+.register-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.register-link {
+    color: #7e22ce;
+    text-decoration: underline;
+    font-weight: 500;
+}
+    </style>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card-wrapper">
+            
+            <!-- Logo and Title -->
+            <header class="login-header">
+                <div class="logo-box">
+                    <i data-lucide="user" class="logo-icon"></i>
+                </div>
+                <h1>Welcome Back!</h1>
+                <p>Login to Meowy Groom</p>
+            </header>
+
+            <!-- Login Form -->
+            <main class="login-card">
+                <form id="loginForm">
+                    
+                    <!-- Role Selection -->
+                    <div class="form-group">
+                        <label for="role">Login As</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="user" class="input-icon"></i>
+                            <select id="role" name="role" class="form-input">
+                                <option value="customer">Customer</option>
+                                <option value="staff">Staff</option>
+                                <option value="owner">Owner</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="user" class="input-icon"></i>
+                            <input type="text" id="username" placeholder="Enter your username" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input type="password" id="password" placeholder="Enter your password" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <!-- Remember & Forgot -->
+                    <div class="form-footer-links">
+                        <label class="checkbox-label">
+                            <input type="checkbox"> <span>Remember me</span>
+                        </label>
+                        <a href="#">Forgot password?</a>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="btn-login">
+                        <i data-lucide="log-in"></i>
+                        <span>Login</span>
+                    </button>
+                </form>
+
+                <!-- Demo Credentials -->
+                <section class="demo-box">
+                    <p class="demo-title">🔑 Demo Credentials</p>
+                    <div class="demo-grid">
+                        <div class="demo-item customer">
+                            <p class="role-label">Customer</p>
+                            <p>User: aliahmad</p>
+                            <p>Pass: ali123</p>
+                        </div>
+                        <div class="demo-item staff">
+                            <p class="role-label">Staff</p>
+                            <p>User: mikejohnson</p>
+                            <p>Pass: mike123</p>
+                        </div>
+                        <div class="demo-item owner">
+                            <p class="role-label">Owner</p>
+                            <p>User: mohdhanafi</p>
+                            <p>Pass: hanafi123</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Register Link -->
+                <footer class="register-footer">
+                    <span>Don't have an account? </span>
+                    <a href="register.html" class="register-link">Register here</a>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script>
+      // Initialize Lucide Icons
+      lucide.createIcons();
+
+      document.getElementById("loginForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const role = document.getElementById("role").value;
+
+        // FIX: Check all three roles and save the logged-in role to sessionStorage
+        if (role === "customer" && username === "aliahmad" && password === "ali123") {
+          sessionStorage.setItem('userRole', 'customer');
+          window.location.href = "sidebar.html";
+        }
+        else if (role === "staff" && username === "mikejohnson" && password === "mike123") {
+          sessionStorage.setItem('userRole', 'staff');
+          window.location.href = "sidebar.html";
+        }
+        else if (role === "owner" && username === "mohdhanafi" && password === "hanafi123") {
+          sessionStorage.setItem('userRole', 'owner');
+          window.location.href = "sidebar.html";
+        }
+        else {
+          alert("Invalid credentials. Please try again.");
+        }
+      });
+    </script>
+</body>
+</html>

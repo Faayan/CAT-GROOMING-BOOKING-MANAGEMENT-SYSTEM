@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Profile · Meowy Groom</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    :root {
+      --purple-900: #4a1d96;
+      --purple-700: #6d28d9;
+      --purple-600: #7c3aed;
+      --purple-100: #ede9fe;
+      --pink-200:   #fbcfe8;
+      --pink-100:   #fce7f3;
+      --gray-50:    #f9fafb;
+      --gray-100:   #f3f4f6;
+      --gray-200:   #e5e7eb;
+      --gray-300:   #d1d5db;
+      --gray-400:   #9ca3af;
+      --gray-500:   #6b7280;
+      --gray-600:   #4b5563;
+      --gray-700:   #374151;
+      --white:      #ffffff;
+      --red-600:    #dc2626;
+      --red-50:     #fef2f2;
+      --green-500:  #10b981;
+      --green-600:  #059669;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-700);
+      min-height: 100vh;
+    }
+
+    /* ============================================ */
+    /* MAIN CONTENT */
+    /* ============================================ */
+    .main {
+      padding: 36px 40px 60px;
+      min-height: 100vh;
+    }
+
+    /* ============================================ */
+    /* PAGE HEADING */
+    /* ============================================ */
+    .page-heading { 
+      margin-bottom: 24px; 
+    }
+    .page-title { 
+      font-size: 2rem; 
+      font-weight: 800; 
+      color: #111827; 
+    }
+    .page-subtitle { 
+      font-size: 0.875rem; 
+      color: var(--gray-500); 
+      margin-top: 4px; 
+    }
+
+    /* ============================================ */
+    /* PROFILE CARD */
+    /* ============================================ */
+    .profile-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+      padding: 36px;
+      max-width: 800px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .avatar-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .avatar-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--purple-100);
+      border: 3px solid var(--purple-600);
+    }
+    
+    .avatar-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+    
+    .avatar-wrapper:hover .avatar-overlay {
+      opacity: 1;
+    }
+    
+    .remove-photo-btn {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 26px;
+      height: 26px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+    
+    .remove-photo-btn:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+
+    .profile-name-section h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #111827;
+    }
+    
+    .profile-name-section p {
+      color: var(--gray-500);
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+
+    .edit-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--purple-600);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .edit-btn:hover {
+      background: var(--purple-700);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================ */
+    /* FORM & DISPLAY STYLES */
+    /* ============================================ */
+    .view-section, .edit-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .field-display {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--gray-50);
+      border-radius: 12px;
+    }
+
+    .field-display svg {
+      width: 20px;
+      height: 20px;
+      color: var(--gray-500);
+      flex-shrink: 0;
+    }
+
+    .field-display span {
+      flex: 1;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gray-600);
+      margin-bottom: 8px;
+    }
+
+    .field-input-wrap {
+      position: relative;
+    }
+    
+    .field-input-wrap .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+    
+    .field-input-wrap input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: 'Nunito', sans-serif;
+      outline: none;
+      background: white;
+      transition: all 0.2s;
+    }
+    
+    .field-input-wrap input:focus {
+      border-color: var(--purple-600);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    }
+
+    .readonly-field {
+      background: var(--gray-50);
+      padding: 14px 16px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-save {
+      background: var(--green-500);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+    }
+    
+    .btn-save:hover {
+      background: var(--green-600);
+      transform: translateY(-1px);
+    }
+    
+    .btn-cancel {
+      background: var(--red-600);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+    }
+    
+    .btn-cancel:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .edit-photo-hint {
+      font-size: 0.7rem;
+      color: var(--gray-400);
+      margin-top: 6px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* ============================================ */
+    /* RESPONSIVE */
+    /* ============================================ */
+    @media (max-width: 768px) {
+      .main {
+        padding: 20px;
+      }
+      
+      .profile-header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      
+      .avatar-section {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SVG symbol defs -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+  </symbol>
+  <symbol id="ico-at-sign" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+  </symbol>
+  <symbol id="ico-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </symbol>
+  <symbol id="ico-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </symbol>
+  <symbol id="ico-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+  </symbol>
+</svg>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <div class="page-heading">
+    <h1 class="page-title">Profile</h1>
+    <p class="page-subtitle">View and update your personal information</p>
+  </div>
+
+  <div class="profile-card">
+
+    <div class="profile-header">
+      <div class="avatar-section">
+        <div class="avatar-wrapper" id="avatar-wrapper">
+          <div class="avatar-circle" id="avatar-circle"></div>
+          <label class="avatar-overlay" id="avatar-overlay" style="display: none;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <input type="file" accept="image/*" id="photo-input" />
+          </label>
+          <button class="remove-photo-btn" id="remove-photo-btn" style="display: none;" title="Remove photo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="profile-name-section">
+          <h2 id="display-fullname">Ali Ahmad</h2>
+          <p id="display-username">@aliahmad</p>
+          <p class="edit-photo-hint" id="edit-photo-hint"></p>
+        </div>
+      </div>
+      <button id="edit-btn" class="edit-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3l4 4-7 7H10v-4l7-7z"/><path d="M4 20h16"/></svg>
+        Edit
+      </button>
+    </div>
+
+    <!-- VIEW PROFILE SECTION -->
+    <div id="view-profile-section" class="view-section">
+      <div>
+        <label class="field-label">Full Name</label>
+        <div class="field-display">
+          <svg><use href="#ico-user"/></svg>
+          <span id="text-fullname">Ali Ahmad</span>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Username</label>
+        <div class="field-display">
+          <svg><use href="#ico-at-sign"/></svg>
+          <span id="text-username">@aliahmad</span>
+          <span style="margin-left: auto; font-size: 0.7rem; color: var(--gray-400);">(Cannot be changed)</span>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Password</label>
+        <div class="field-display">
+          <svg><use href="#ico-lock"/></svg>
+          <span>••••••••</span>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Phone Number</label>
+        <div class="field-display">
+          <svg><use href="#ico-phone"/></svg>
+          <span id="text-phone">+60 12-345 6789</span>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Email Address</label>
+        <div class="field-display">
+          <svg><use href="#ico-mail"/></svg>
+          <span id="text-email">aliahmad@gmail.com</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT PROFILE SECTION -->
+    <div id="edit-profile-section" class="edit-section" style="display: none;">
+      <div>
+        <label class="field-label">Full Name</label>
+        <div class="field-input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <input type="text" id="input-fullname" value="Ali Ahmad" placeholder="Full name" />
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Username</label>
+        <div class="readonly-field">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>
+          <span id="edit-readonly-username" style="flex: 1; margin-left: 12px;">@aliahmad</span>
+          <span style="font-size: 0.7rem; color: var(--gray-400);">Unique identifier</span>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Password</label>
+        <div class="field-input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="input-password" value="password123" placeholder="New password" />
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Phone Number</label>
+        <div class="field-input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <input type="tel" id="input-phone" value="+60 12-345 6789" placeholder="Phone number" />
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Email Address</label>
+        <div class="field-input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input type="email" id="input-email" value="aliahmad@gmail.com" placeholder="Email address" />
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button id="save-btn" class="btn-save">Save</button>
+        <button id="cancel-btn" class="btn-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  (function() {
+    let profilePhoto = null;        
+    let isEditing = false;
+
+    let profile = {
+      fullname: 'Ali Ahmad',
+      username: 'aliahmad',
+      phone: '+60 12-345 6789',
+      email: 'aliahmad@gmail.com',
+      password: 'password123'
+    };
+
+    let snapshot = { ...profile };
+    let photoSnapshot = null;
+
+    const viewSection = document.getElementById('view-profile-section');
+    const editSection = document.getElementById('edit-profile-section');
+    const editBtn = document.getElementById('edit-btn');
+    const avatarCircle = document.getElementById('avatar-circle');
+    const avatarOverlay = document.getElementById('avatar-overlay');
+    const removePhotoBtn = document.getElementById('remove-photo-btn');
+    const photoInput = document.getElementById('photo-input');
+    const editPhotoHint = document.getElementById('edit-photo-hint');
+    const displayFullname = document.getElementById('display-fullname');
+    const displayUsername = document.getElementById('display-username');
+    const textFullname = document.getElementById('text-fullname');
+    const textUsername = document.getElementById('text-username');
+    const textPhone = document.getElementById('text-phone');
+    const textEmail = document.getElementById('text-email');
+    const inputFullname = document.getElementById('input-fullname');
+    const inputPassword = document.getElementById('input-password');
+    const inputPhone = document.getElementById('input-phone');
+    const inputEmail = document.getElementById('input-email');
+    const editReadonlyUsernameSpan = document.getElementById('edit-readonly-username');
+    const saveBtn = document.getElementById('save-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    function renderAvatar() {
+      avatarCircle.innerHTML = '';
+      if (profilePhoto) {
+        const img = document.createElement('img');
+        img.src = profilePhoto;
+        img.alt = 'Profile avatar';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        avatarCircle.appendChild(img);
+      } else {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '40');
+        svg.setAttribute('height', '40');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', '#7c3aed');
+        svg.setAttribute('stroke-width', '2');
+        svg.innerHTML = '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>';
+        avatarCircle.appendChild(svg);
+      }
+    }
+
+    function syncUIFromProfile() {
+      displayFullname.textContent = profile.fullname;
+      displayUsername.textContent = '@' + profile.username;
+      if (textFullname) textFullname.textContent = profile.fullname;
+      if (textUsername) textUsername.textContent = '@' + profile.username;
+      if (textPhone) textPhone.textContent = profile.phone;
+      if (textEmail) textEmail.textContent = profile.email;
+      if (inputFullname) inputFullname.value = profile.fullname;
+      if (inputPhone) inputPhone.value = profile.phone;
+      if (inputEmail) inputEmail.value = profile.email;
+      if (inputPassword) inputPassword.value = profile.password;
+      if (editReadonlyUsernameSpan) editReadonlyUsernameSpan.textContent = '@' + profile.username;
+      renderAvatar();
+    }
+
+    function setEditingMode(editing) {
+      isEditing = editing;
+      if (isEditing) {
+        viewSection.style.display = 'none';
+        editSection.style.display = 'flex';
+        avatarOverlay.style.display = 'flex';
+        editPhotoHint.style.display = 'block';
+        editBtn.style.display = 'none';
+        removePhotoBtn.style.display = profilePhoto ? 'flex' : 'none';
+        editPhotoHint.textContent = 'Click camera icon to change photo';
+      } else {
+        viewSection.style.display = 'flex';
+        editSection.style.display = 'none';
+        avatarOverlay.style.display = 'none';
+        editPhotoHint.style.display = 'none';
+        editBtn.style.display = 'flex';
+        removePhotoBtn.style.display = 'none';
+      }
+    }
+
+    function saveChanges() {
+      const newFullname = inputFullname.value.trim();
+      const newPhone = inputPhone.value.trim();
+      const newEmail = inputEmail.value.trim();
+      const newPassword = inputPassword.value;
+      if (newFullname !== '') profile.fullname = newFullname;
+      if (newPhone !== '') profile.phone = newPhone;
+      if (newEmail !== '') profile.email = newEmail;
+      if (newPassword !== '') profile.password = newPassword;
+      syncUIFromProfile();
+      setEditingMode(false);
+      snapshot = { ...profile };
+      photoSnapshot = profilePhoto;
+    }
+
+    function cancelChanges() {
+      profile = { ...snapshot };
+      profilePhoto = photoSnapshot;
+      syncUIFromProfile();
+      setEditingMode(false);
+    }
+
+    photoInput.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        profilePhoto = reader.result;
+        renderAvatar();
+        if (isEditing) removePhotoBtn.style.display = 'flex';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    removePhotoBtn.addEventListener('click', () => {
+      profilePhoto = null;
+      photoInput.value = '';
+      renderAvatar();
+      if (isEditing) removePhotoBtn.style.display = 'none';
+    });
+
+    editBtn.addEventListener('click', () => {
+      snapshot = { ...profile };
+      photoSnapshot = profilePhoto;
+      inputFullname.value = profile.fullname;
+      inputPhone.value = profile.phone;
+      inputEmail.value = profile.email;
+      inputPassword.value = profile.password;
+      if (editReadonlyUsernameSpan) editReadonlyUsernameSpan.textContent = '@' + profile.username;
+      setEditingMode(true);
+    });
+
+    saveBtn.addEventListener('click', saveChanges);
+    cancelBtn.addEventListener('click', cancelChanges);
+
+    syncUIFromProfile();
+    setEditingMode(false);
+
+    avatarOverlay.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isEditing) photoInput.click();
+    });
+  })();
+</script>
+
+</body>
+</html>

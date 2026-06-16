@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Details - Meowy Groom</title>
+    <style>
+        :root {
+            --purple-900: #581c87;
+            --purple-500: #a855f7;
+            --pink-500: #ec4899;
+            --blue-50: #eff6ff;
+            --blue-200: #bfdbfe;
+            --purple-50: #faf5ff;
+            --purple-200: #e9d5ff;
+            --text-gray: #4b5563;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #ffffff;
+            height: 100vh;
+        }
+
+        .logout-section {
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .logout-btn {
+            color: #dc2626;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-container {
+            margin-left: 256px;
+            margin-top: 64px;
+            flex: 1;
+            padding: 32px;
+            max-width: 1000px;
+        }
+
+        /* Invoice Detail Header */
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-gradient {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--purple-500), var(--pink-500));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .status-badge {
+            background-color: #dcfce7;
+            color: #15803d;
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Cards */
+        .info-card {
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 2px solid transparent;
+        }
+
+        .card-blue {
+            background: linear-gradient(135deg, var(--blue-50), #e0e7ff);
+            border-color: var(--blue-200);
+        }
+
+        .card-purple {
+            background: linear-gradient(135deg, var(--purple-50), #fce7f3);
+            border-color: var(--purple-200);
+        }
+
+        .card-white {
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .data-box {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .label {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+        }
+
+        .value {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        /* Items List */
+        .service-row {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        /* Totals */
+        .total-section {
+            border-top: 2px solid #e5e7eb;
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .grand-total {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px solid #bbf7d0;
+            padding: 16px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-amount {
+            color: #16a34a;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+
+        .btn-close {
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 12px 32px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="main-container">
+        <div class="detail-header">
+            <div class="header-left">
+                <div class="icon-gradient">📄</div>
+                <div>
+                    <h2 style="font-size: 24px;">Invoice Details</h2>
+                    <p style="color: #6b7280;">INV-2024-001</p>
+                </div>
+            </div>
+            <div class="status-badge">
+                ✅ Paid
+            </div>
+        </div>
+
+        <div class="info-card card-blue">
+            <h3 style="color: #2563eb; font-size: 18px;">👤 Customer & Cat Information</h3>
+            <div class="grid-3">
+                <div class="data-box">
+                    <div class="label">Customer Name</div>
+                    <div class="value">Ali Ahmad</div>
+                </div>
+                <div class="data-box">
+                    <div class="label">Email</div>
+                    <div class="value">ali@email.com</div>
+                </div>
+                <div class="data-box">
+                    <div class="label">Cat Name</div>
+                    <div class="value">Whiskers</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card card-purple">
+            <h3 style="color: #9333ea; font-size: 18px;">📅 Invoice Information</h3>
+            <div class="grid-3">
+                <div class="data-box">
+                    <div class="label">Invoice Number</div>
+                    <div class="value">INV-2024-001</div>
+                </div>
+                <div class="data-box">
+                    <div class="label">Service Date</div>
+                    <div class="value">January 8, 2026</div>
+                </div>
+                <div class="data-box">
+                    <div class="label">Created By</div>
+                    <div class="value">Staff Admin</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card card-white">
+            <h3 style="margin-bottom: 20px;">💰 Services</h3>
+            <div class="service-row">
+                <span>1. Long-hair Package</span>
+                <span class="value">RM 60.00</span>
+            </div>
+            <div class="service-row">
+                <span>2. Lion Cut</span>
+                <span class="value">RM 120.00</span>
+            </div>
+            <div class="service-row">
+                <span>3. Flea Removal</span>
+                <span class="value">RM 20.00</span>
+            </div>
+            <div class="service-row">
+                <span>4. Medicated Shampoo + Scrubbing</span>
+                <span class="value">RM 10.00</span>
+            </div>
+
+            <div class="total-section">
+                <div style="display: flex; justify-content: space-between; padding: 12px;">
+                    <span>Subtotal</span>
+                    <span class="value">RM 210.00</span>
+                </div>
+                <div class="grand-total">
+                    <span style="font-size: 18px; color: #065f46;">Total Amount</span>
+                    <span class="total-amount">RM 210.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-close" onclick="window.location.href='mainInvoice.html'">Close</button>
+        </div>
+    </main>
+
+</body>
+</html>

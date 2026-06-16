@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check Availability – Meowy Groom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #f3f4f6;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .page-header h2 {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .page-header p {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-top: 0.2rem;
+      font-weight: 600;
+    }
+
+    /* ── TWO COLUMN GRID ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    /* ── CALENDAR ── */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .cal-header h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .month-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .nav-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      color: #374151;
+    }
+
+    .nav-btn:hover { background: #f3f4f6; }
+
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .month-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #374151;
+      min-width: 130px;
+      text-align: center;
+    }
+
+    /* Calendar grid */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .day-name {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #6b7280;
+      padding: 0.4rem 0;
+    }
+
+    .day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
+      color: #111827;
+    }
+
+    .day-cell:hover:not(.past):not(.selected) { background: #f3f4f6; }
+    .day-cell.today { background: #f3e8ff; color: #7c3aed; }
+    .day-cell.today:hover { background: #e9d5ff; }
+    .day-cell.selected { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; box-shadow: 0 2px 8px rgba(139,92,246,0.4); }
+    .day-cell.past { color: #d1d5db; cursor: not-allowed; }
+    .day-cell.empty { cursor: default; }
+
+    /* Selected date banner */
+    .selected-banner {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: #f5f3ff;
+      border: 1px solid #ddd6fe;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #5b21b6;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .selected-banner.show { display: flex; }
+
+    .selected-banner svg {
+      width: 16px;
+      height: 16px;
+      stroke: #7c3aed;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* ── TIME SECTION ── */
+    .time-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .time-header svg {
+      width: 20px;
+      height: 20px;
+      stroke: #7c3aed;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .time-header h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    /* Empty state */
+    .time-empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #9ca3af;
+    }
+
+    .time-empty svg {
+      width: 48px;
+      height: 48px;
+      stroke: #d1d5db;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      margin-bottom: 0.75rem;
+    }
+
+    .time-empty p {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .slots-label {
+      font-size: 0.82rem;
+      color: #6b7280;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Time slots grid */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .slot-btn {
+      padding: 0.75rem 0.5rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #374151;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .slot-btn .slot-inner {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .slot-btn .slot-inner svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .slot-btn:hover:not(.booked) {
+      border-color: #a78bfa;
+      background: #fafafa;
+    }
+
+    .slot-btn.selected-slot {
+      border-color: #7c3aed;
+      background: #f5f3ff;
+      color: #6d28d9;
+    }
+
+    .slot-btn.booked {
+      border-color: #e5e7eb;
+      background: #f9fafb;
+      color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .booked-label {
+      font-size: 0.72rem;
+      color: #ef4444;
+      font-weight: 700;
+    }
+
+    /* Selected time banner */
+    .time-selected-banner {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #15803d;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .time-selected-banner.show { display: flex; }
+
+    .time-selected-banner svg {
+      width: 16px;
+      height: 16px;
+      stroke: #16a34a;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.75rem;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .btn-cancel:hover { background: #dc2626; }
+
+    .btn-continue {
+      background: #22c55e;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(34,197,94,0.3);
+    }
+
+    .btn-continue:hover:not(:disabled) {
+      background: #16a34a;
+      box-shadow: 0 6px 20px rgba(34,197,94,0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-continue:disabled {
+      background: #d1d5db;
+      color: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .two-col { grid-template-columns: 1fr; }
+      .slots-grid { grid-template-columns: 1fr 1fr; }
+      .action-row { flex-direction: column; }
+      .btn { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div>
+      <h2>Check Availability</h2>
+      <p>Select an available date and time for your grooming session</p>
+    </div>
+  </div>
+
+  <!-- Calendar + Time -->
+  <div class="two-col">
+
+    <!-- Calendar Card -->
+    <div class="card">
+      <div class="cal-header">
+        <h3>Select Date</h3>
+        <div class="month-nav">
+          <button class="nav-btn" onclick="prevMonth()">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="month-label" id="month-label"></span>
+          <button class="nav-btn" onclick="nextMonth()">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="cal-grid" id="cal-grid">
+        <!-- Day names rendered by JS -->
+      </div>
+
+      <div class="selected-banner" id="selected-banner">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span id="selected-date-text"></span>
+      </div>
+    </div>
+
+    <!-- Time Card -->
+    <div class="card">
+      <div class="time-header">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <h3>Select Time</h3>
+      </div>
+
+      <!-- Empty state -->
+      <div class="time-empty" id="time-empty">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <p>Please select a date first</p>
+      </div>
+
+      <!-- Slots -->
+      <div id="time-slots-section" style="display:none">
+        <p class="slots-label" id="slots-label"></p>
+        <div class="slots-grid" id="slots-grid"></div>
+        <div class="time-selected-banner" id="time-selected-banner">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span id="time-selected-text"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-row">
+  <button class="btn btn-continue" id="continue-btn"
+          onclick="window.location.href='selectCat.html'">
+    Continue
+  </button>
+</div>
+
+
+</div>
+
+<script>
+  const monthNames = ["January","February","March","April","May","June",
+                      "July","August","September","October","November","December"];
+  const dayNames   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const timeSlots  = ["09:00 AM","10:00 AM","11:00 AM","12:00 PM",
+                      "02:00 PM","03:00 PM","04:00 PM","05:00 PM"];
+  const unavailable = ["12:00 PM","03:00 PM"];
+
+  let currentMonth = new Date();
+  currentMonth.setDate(1);
+  let selectedDate = '';
+  let selectedTime = '';
+
+  /* ── Calendar ── */
+  function renderCalendar() {
+    const year  = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    document.getElementById('month-label').textContent =
+      monthNames[month] + ' ' + year;
+
+    const grid = document.getElementById('cal-grid');
+    grid.innerHTML = '';
+
+    // Day name headers
+    dayNames.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'day-name';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+
+    // Empty cells
+    const firstDay = new Date(year, month, 1).getDay();
+    for (let i = 0; i < firstDay; i++) {
+      const el = document.createElement('div');
+      el.className = 'day-cell empty';
+      grid.appendChild(el);
+    }
+
+    // Day cells
+    const today = new Date(); today.setHours(0,0,0,0);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date    = new Date(year, month, d);
+      const dateStr = date.toISOString().split('T')[0];
+      const isPast  = date < today;
+      const isToday = date.toDateString() === today.toDateString();
+      const isSel   = selectedDate === dateStr;
+
+      const btn = document.createElement('button');
+      btn.className = 'day-cell' +
+        (isSel   ? ' selected' :
+         isPast  ? ' past' :
+         isToday ? ' today' : '');
+      btn.textContent = d;
+      btn.disabled = isPast;
+
+      if (!isPast) {
+        btn.addEventListener('click', () => selectDate(dateStr));
+      }
+      grid.appendChild(btn);
+    }
+  }
+
+  function selectDate(dateStr) {
+    selectedDate = dateStr;
+    selectedTime = '';
+    renderCalendar();
+
+    // Banner
+    const banner = document.getElementById('selected-banner');
+    banner.classList.add('show');
+    document.getElementById('selected-date-text').textContent =
+      'Selected: ' + new Date(dateStr).toLocaleDateString('en-US',{
+        weekday:'long', year:'numeric', month:'long', day:'numeric'
+      });
+
+    renderSlots();
+    updateContinue();
+  }
+
+  function prevMonth() {
+    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+    renderCalendar();
+  }
+
+  function nextMonth() {
+    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+    renderCalendar();
+  }
+
+  /* ── Time slots ── */
+  function renderSlots() {
+    document.getElementById('time-empty').style.display = 'none';
+    const section = document.getElementById('time-slots-section');
+    section.style.display = 'block';
+
+    document.getElementById('slots-label').textContent =
+      'Available time slots for ' +
+      new Date(selectedDate).toLocaleDateString('en-US',{
+        weekday:'long', year:'numeric', month:'long', day:'numeric'
+      });
+
+    const grid = document.getElementById('slots-grid');
+    grid.innerHTML = '';
+
+    timeSlots.forEach(slot => {
+      const isBooked   = unavailable.includes(slot);
+      const isSelected = selectedTime === slot;
+
+      const btn = document.createElement('button');
+      btn.className = 'slot-btn' +
+        (isSelected ? ' selected-slot' : isBooked ? ' booked' : '');
+      btn.disabled = isBooked;
+
+      btn.innerHTML = `
+        <div class="slot-inner">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ${slot}
+        </div>
+        ${isBooked ? '<span class="booked-label">Booked</span>' : ''}`;
+
+      if (!isBooked) {
+        btn.addEventListener('click', () => selectTime(slot));
+      }
+      grid.appendChild(btn);
+    });
+
+    // Time selected banner
+    const timeBanner = document.getElementById('time-selected-banner');
+    if (selectedTime) {
+      timeBanner.classList.add('show');
+      document.getElementById('time-selected-text').textContent =
+        'Time selected: ' + selectedTime;
+    } else {
+      timeBanner.classList.remove('show');
+    }
+  }
+
+  function selectTime(slot) {
+    selectedTime = slot;
+    renderSlots();
+    updateContinue();
+  }
+
+  function updateContinue() {
+    document.getElementById('continue-btn').disabled =
+      !(selectedDate && selectedTime);
+  }
+
+  /* ── Actions ── */
+  function handleContinue() {
+    if (selectedDate && selectedTime) {
+      // Pass data to next page via URL params
+      const params = new URLSearchParams({ date: selectedDate, time: selectedTime });
+      // window.location.href = 'SelectCat.html?' + params.toString();
+      alert('Proceeding with:\nDate: ' + selectedDate + '\nTime: ' + selectedTime);
+    }
+  }
+
+  function handleCancel() {
+    window.history.back();
+  }
+
+  // Init
+  renderCalendar();
+</script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Appointment Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple-50:  #f5f3ff;
+      --purple-100: #ede9fe;
+      --purple-200: #ddd6fe;
+      --purple-600: #7c3aed;
+      --purple-700: #6d28d9;
+      --blue-50:    #eff6ff;
+      --blue-200:   #bfdbfe;
+      --blue-600:   #2563eb;
+      --indigo-50:  #eef2ff;
+      --green-50:   #f0fdf4;
+      --green-100:  #dcfce7;
+      --green-200:  #bbf7d0;
+      --green-600:  #16a34a;
+      --green-700:  #15803d;
+      --green-900:  #14532d;
+      --emerald-50: #ecfdf5;
+      --amber-100:  #fef3c7;
+      --amber-500:  #f59e0b;
+      --amber-700:  #b45309;
+      --orange-500: #f97316;
+      --gray-50:    #f9fafb;
+      --gray-100:   #f3f4f6;
+      --gray-200:   #e5e7eb;
+      --gray-300:   #d1d5db;
+      --gray-500:   #6b7280;
+      --gray-600:   #4b5563;
+      --gray-700:   #374151;
+      --gray-900:   #111827;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .page-wrap {
+      max-width: 720px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeUp .55s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .status-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .status-icon svg { width: 26px; height: 26px; stroke: #fff; }
+    .status-icon.pending   { background: linear-gradient(135deg, var(--amber-500), var(--orange-500)); }
+    .status-icon.confirmed { background: linear-gradient(135deg, #22c55e, #10b981); }
+    .status-icon.completed { background: linear-gradient(135deg, #22c55e, #10b981); }
+    .appt-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #fff; }
+    .appt-id    { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 3px; }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    }
+    .status-badge svg { width: 16px; height: 16px; }
+    .status-badge.pending   { background: var(--amber-100);  color: var(--amber-700); }
+    .status-badge.confirmed { background: var(--green-100); color: var(--green-700); }
+    .status-badge.completed { background: var(--green-100); color: var(--green-700); }
+
+    .card {
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.2);
+    }
+    .card-blue   { background: linear-gradient(135deg, var(--blue-50), var(--indigo-50)); border: 2px solid var(--blue-200); }
+    .card-purple { background: linear-gradient(135deg, var(--purple-50), #fdf4ff);        border: 2px solid var(--purple-200); }
+    .card-white  { background: #fff; border: 2px solid var(--gray-200); }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-900);
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 18px;
+    }
+    .card-title svg { width: 18px; height: 18px; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr;     gap: 12px; }
+    @media (max-width: 540px) {
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .info-box { background: #fff; border-radius: 10px; padding: 14px; }
+    .info-label {
+      font-size: 12px; color: var(--gray-500);
+      display: flex; align-items: center; gap: 5px;
+      margin-bottom: 6px;
+    }
+    .info-label svg { width: 13px; height: 13px; }
+    .info-value { font-size: 14px; font-weight: 500; color: var(--gray-900); }
+
+    .cat-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cat-tag {
+      padding: 5px 14px;
+      background: var(--purple-100);
+      color: var(--purple-700);
+      border-radius: 999px;
+      font-size: 13px; font-weight: 500;
+    }
+
+    .service-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--gray-50);
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+    .service-left { display: flex; align-items: center; gap: 12px; }
+    .service-num {
+      width: 38px; height: 38px;
+      background: var(--purple-100);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: var(--purple-600);
+      flex-shrink: 0;
+    }
+    .service-name { font-size: 14px; font-weight: 500; color: var(--gray-900); }
+    .service-sub  { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+    .service-price{ font-size: 14px; font-weight: 600; color: var(--gray-700); }
+
+    .total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--green-50), var(--emerald-50));
+      border: 2px solid var(--green-200);
+      border-radius: 12px;
+      margin-top: 4px;
+    }
+    .total-label  { font-size: 16px; font-weight: 600; color: var(--green-900); }
+    .total-amount { font-size: 26px; font-weight: 700; color: var(--green-600); }
+
+    .footer { display: flex; justify-content: flex-end; }
+    .btn-close {
+      padding: 12px 32px;
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,.25);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      backdrop-filter: blur(4px);
+      transition: background .2s;
+    }
+    .btn-close:hover { background: rgba(255,255,255,.22); }
+    .btn-close svg { width: 16px; height: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- Top Header -->
+  <div class="top-header">
+    <div class="header-left">
+      <div class="status-icon" id="statusIcon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div>
+        <div class="appt-title">Appointment Details</div>
+        <div class="appt-id" id="apptId"></div>
+      </div>
+    </div>
+    <div class="status-badge" id="statusBadge"></div>
+  </div>
+
+  <!-- Customer Information -->
+  <div class="card card-blue">
+    <div class="card-title" style="color:#1e40af">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Customer Information
+    </div>
+    <div class="grid-3" id="customerGrid"></div>
+  </div>
+
+  <!-- Appointment Details -->
+  <div class="card card-purple">
+    <div class="card-title" style="color:#4c1d95">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Appointment Details
+    </div>
+    <div class="grid-2" id="dateTimeGrid" style="margin-bottom:14px"></div>
+    <div class="info-box">
+      <div class="info-label">🐱 Cat(s)</div>
+      <div class="cat-tags" id="catTags"></div>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <div class="card card-white">
+    <div class="card-title">✂️ Services</div>
+    <div id="servicesList"></div>
+    <div class="total-row">
+      <span class="total-label">Total Amount</span>
+      <span class="total-amount" id="totalAmount"></span>
+    </div>
+  </div>
+
+  <!-- Close -->
+  <div class="footer">
+    <button class="btn-close" onclick="window.location.href='appointmentManagement.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Close
+    </button>
+  </div>
+
+</div>
+
+<script>
+  // ─── Service Catalog ────────────────────────────────────────────────────────
+  const mainServices = [
+    {
+      id: 'kitten',
+      name: 'Kitten Package',
+      description: 'Gentle grooming designed for kittens under 4 months old.',
+      weightBased: {
+        prices: [
+          { weight: 'Below 1.5 kg', price: 35 },
+          { weight: '1.6 kg – 2.5 kg', price: 40 },
+        ]
+      },
+      requirements: ['Kittens must be below 4 months old']
+    },
+    {
+      id: 'short-hair',
+      name: 'Short-hair Package',
+      description: 'Bath & dry, nail clipping, eye & ear cleaning. Great for short-haired cats.',
+      price: 55
+    },
+    {
+      id: 'long-hair',
+      name: 'Long-hair Package',
+      description: 'Bath & dry, nail clipping, eye & ear cleaning. Great for long-haired cats.',
+      price: 60
+    },
+    {
+      id: 'lion-cut',
+      name: 'Lion Cut',
+      description: 'Full body shave leaving a mane around the head and fluffy tail tip.',
+      price: 120
+    }
+  ];
+
+  const addonServices = [
+    { id: 'medicated-shampoo', name: 'Medicated Shampoo',              description: 'Hypoallergenic or medicated shampoo for sensitive or problem skin.', price: 10 },
+    { id: 'trimming',          name: 'Trimming - Paw & Sanitary Area', description: 'Trimming the paw and sanitary area for cleanliness and hygiene.',      price: 20 },
+    { id: 'flea-removal',      name: 'Flea Removal',                   description: 'Topical flea and tick treatment applied during the bath.',              price: 20 },
+  ];
+
+  // ─── Appointment Data ────────────────────────────────────────────────────────
+  // Each service entry references a catalog id plus optional weightTier for kitten package.
+  // priceOverride can be used when a weight-based price applies.
+  const appointment = {
+    id: 'APT-20260520-001',
+    customerName:  'Sarah Johnson',
+    customerEmail: 'sarah.johnson@email.com',
+    customerPhone: '+60 12-345 6789',
+    date:   '2026-05-20',
+    time:   '10:00 AM',
+    status: 'confirmed',
+    catNames: ['Whiskers', 'Luna'],
+    // List the booked services: use catalog ids + optional weightTier / priceOverride
+    services: [
+      { id: 'long-hair',    weightTier: null },
+      { id: 'flea-removal', weightTier: null },
+      { id: 'trimming',     weightTier: null },
+    ],
+  };
+
+  // ─── Helpers ────────────────────────────────────────────────────────────────
+  function lookupService(id) {
+    return mainServices.find(s => s.id === id) || addonServices.find(s => s.id === id) || null;
+  }
+
+  function resolvePrice(catalog, weightTier) {
+    if (catalog.weightBased && weightTier) {
+      const tier = catalog.weightBased.prices.find(p => p.weight === weightTier);
+      return tier ? tier.price : catalog.weightBased.prices[0].price;
+    }
+    return catalog.price ?? 0;
+  }
+
+  // ─── Render ─────────────────────────────────────────────────────────────────
+  function render() {
+    const { id, customerName, customerEmail, customerPhone, date, time, status, catNames, services } = appointment;
+    const isPending = status === 'pending';
+
+    document.getElementById('statusIcon').classList.add(status);
+    document.getElementById('apptId').textContent = `Appointment #${id}`;
+
+    const badge = document.getElementById('statusBadge');
+    badge.classList.add(status);
+    badge.innerHTML = isPending
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Pending`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> ${status.charAt(0).toUpperCase()+status.slice(1)}`;
+
+    // Customer grid
+    const custGrid = document.getElementById('customerGrid');
+    [['Name', customerName], ['Email', customerEmail], ['Phone', customerPhone]].forEach(([label, val]) => {
+      custGrid.innerHTML += `<div class="info-box"><div class="info-label">${label}</div><div class="info-value">${val}</div></div>`;
+    });
+
+    // Date / time grid
+    const dtGrid = document.getElementById('dateTimeGrid');
+    dtGrid.innerHTML = `
+      <div class="info-box">
+        <div class="info-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date</div>
+        <div class="info-value">${new Date(date+'T00:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
+      </div>
+      <div class="info-box">
+        <div class="info-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Time</div>
+        <div class="info-value">${time}</div>
+      </div>`;
+
+    // Cat tags
+    const tags = document.getElementById('catTags');
+    catNames.forEach(n => { tags.innerHTML += `<span class="cat-tag">${n}</span>`; });
+
+    // Services list
+    const list = document.getElementById('servicesList');
+    let total = 0;
+
+    services.forEach((svc, i) => {
+      const catalog = lookupService(svc.id);
+      if (!catalog) return;
+
+      const price = resolvePrice(catalog, svc.weightTier);
+      total += price;
+
+      const subLine = svc.weightTier
+        ? `<div class="service-sub">${svc.weightTier}</div>`
+        : '';
+
+      list.innerHTML += `
+        <div class="service-row">
+          <div class="service-left">
+            <div class="service-num">${i + 1}</div>
+            <div>
+              <div class="service-name">${catalog.name}</div>
+              ${subLine}
+            </div>
+          </div>
+          <div class="service-price">RM ${price.toFixed(2)}</div>
+        </div>`;
+    });
+
+    document.getElementById('totalAmount').textContent = `RM ${total.toFixed(2)}`;
+  }
+
+  render();
+</script>
+</body>
+</html>

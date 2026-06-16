@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Grooming Services</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple-50:  #f5f3ff;
+      --purple-100: #ede9fe;
+      --purple-200: #ddd6fe;
+      --purple-300: #c4b5fd;
+      --purple-400: #a78bfa;
+      --purple-500: #8b5cf6;
+      --purple-600: #7c3aed;
+      --purple-700: #6d28d9;
+      --purple-800: #5b21b6;
+      --purple-900: #4c1d95;
+      --pink-400:   #f472b6;
+      --pink-500:   #ec4899;
+      --blue-50:    #eff6ff;
+      --blue-200:   #bfdbfe;
+      --blue-300:   #93c5fd;
+      --blue-500:   #3b82f6;
+      --blue-600:   #2563eb;
+      --blue-700:   #1d4ed8;
+      --blue-800:   #1e40af;
+      --blue-900:   #1e3a8a;
+      --green-500:  #22c55e;
+      --green-600:  #16a34a;
+      --red-500:    #ef4444;
+      --red-600:    #dc2626;
+      --gray-100:   #f3f4f6;
+      --gray-200:   #e5e7eb;
+      --gray-300:   #d1d5db;
+      --gray-400:   #9ca3af;
+      --gray-500:   #6b7280;
+      --gray-600:   #4b5563;
+      --gray-900:   #111827;
+      --white:      #ffffff;
+      --shadow-sm:  0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md:  0 4px 12px rgba(0,0,0,0.1);
+      --radius:     12px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #f5f3ff 0%, #fdf2f8 50%, #eff6ff 100%);
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+      color: var(--gray-900);
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      animation: fadeUp .45s ease both;
+    }
+
+    .header-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--purple-500), var(--pink-500));
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(139,92,246,.35);
+    }
+
+    .header-icon svg { width: 28px; height: 28px; color: #fff; }
+
+    .header h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      color: var(--gray-900);
+    }
+
+    .header p { font-size: .9rem; color: var(--gray-500); margin-top: 4px; }
+
+    /* Appointment summary card */
+    .appt-card {
+      background: linear-gradient(135deg, var(--purple-50), #fdf2f8);
+      border: 1px solid var(--purple-200);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      font-size: .875rem;
+      animation: fadeUp .45s .08s ease both;
+    }
+
+    .appt-card .label { color: var(--gray-500); }
+    .appt-card .value { color: var(--purple-900); font-weight: 600; }
+    .appt-divider { width: 1px; height: 16px; background: var(--purple-300); }
+
+    /* Section headers */
+    .section-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+    }
+
+    .section-header svg { width: 20px; height: 20px; }
+    .section-header h3 { font-family: 'DM Serif Display', serif; font-size: 1.25rem; }
+
+    .section-note {
+      font-size: .8rem;
+      padding: 10px 14px;
+      border-radius: 8px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .section-note.purple { background: var(--purple-50); border: 1px solid var(--purple-200); color: var(--gray-600); }
+    .section-note.blue   { background: var(--blue-50);   border: 1px solid var(--blue-200);   color: var(--gray-600); }
+    .section-note em     { color: var(--purple-700); font-style: italic; }
+
+    /* Service cards */
+    .service-card {
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      cursor: pointer;
+      transition: border-color .22s, box-shadow .22s, background .22s, transform .15s;
+      background: var(--white);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      animation: fadeUp .4s ease both;
+      position: relative;
+    }
+
+    .service-card:hover { border-color: var(--purple-300); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .service-card.selected-purple { border-color: var(--purple-500); background: var(--purple-50); box-shadow: var(--shadow-md); }
+    .service-card.addon:hover { border-color: var(--blue-300); }
+    .service-card.addon.selected-blue { border-color: var(--blue-500); background: var(--blue-50); box-shadow: var(--shadow-md); }
+
+    .checkbox {
+      width: 22px; height: 22px;
+      border-radius: 5px;
+      border: 2px solid var(--gray-300);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: background .2s, border-color .2s;
+    }
+
+    .checkbox.checked-purple { background: var(--purple-500); border-color: var(--purple-500); }
+    .checkbox.checked-blue   { background: var(--blue-500);   border-color: var(--blue-500); }
+    .checkbox svg { width: 13px; height: 13px; color: #fff; display: none; }
+    .checkbox.checked-purple svg,
+    .checkbox.checked-blue svg { display: block; }
+
+    .service-body { flex: 1; }
+
+    .service-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .service-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      transition: color .2s;
+    }
+
+    .selected-purple .service-name { color: var(--purple-900); }
+    .selected-blue   .service-name { color: var(--blue-900); }
+
+    .service-desc {
+      font-size: .83rem;
+      color: var(--gray-500);
+      line-height: 1.5;
+      transition: color .2s;
+    }
+
+    .selected-purple .service-desc { color: var(--purple-800); }
+    .selected-blue   .service-desc { color: var(--blue-800); }
+
+    .service-price {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      white-space: nowrap;
+      transition: color .2s;
+    }
+
+    .selected-purple .service-price { color: var(--purple-700); }
+    .selected-blue   .service-price { color: var(--blue-700); }
+
+    .requirements { margin-top: 8px; display: flex; flex-direction: column; gap: 3px; }
+    .requirement { font-size: .75rem; color: var(--purple-700); }
+
+    /* Weight dropdown */
+    .weight-wrapper {
+      margin-top: 10px;
+      position: relative;
+      display: none;
+    }
+
+    .weight-wrapper.visible { display: block; }
+
+    .weight-select {
+      width: 100%;
+      padding: 9px 38px 9px 14px;
+      border: 2px solid var(--purple-300);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .875rem;
+      color: var(--gray-900);
+      background: var(--white);
+      appearance: none;
+      cursor: pointer;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .weight-select:focus { border-color: var(--purple-500); box-shadow: 0 0 0 3px rgba(139,92,246,.15); }
+
+    .chevron {
+      position: absolute;
+      right: 11px; top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--gray-500);
+      width: 16px; height: 16px;
+    }
+
+    /* Total bar */
+    .total-bar {
+      background: linear-gradient(135deg, var(--purple-600), var(--pink-500));
+      border-radius: var(--radius);
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(139,92,246,.3);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .total-amount { font-family: 'DM Serif Display', serif; font-size: 1.5rem; }
+
+    /* Action buttons */
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: background .2s, box-shadow .2s, transform .12s;
+    }
+
+    .btn:active { transform: scale(.97); }
+
+    .btn-cancel {
+      background: var(--red-500);
+      color: #fff;
+      border-color: var(--red-500);
+    }
+
+    .btn-cancel:hover { background: var(--red-600); border-color: var(--red-600); }
+
+    .btn-confirm {
+      background: var(--green-500);
+      color: #fff;
+    }
+
+    .btn-confirm:hover:not(:disabled) { background: var(--green-600); box-shadow: 0 4px 14px rgba(34,197,94,.35); }
+    .btn-confirm:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-block { display: flex; flex-direction: column; gap: 12px; animation: fadeUp .4s .12s ease both; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon">
+      <!-- Scissors SVG -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+        <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+        <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+        <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+      </svg>
+    </div>
+    <div>
+      <h2>Choose Grooming Services</h2>
+      <p>Select the grooming package and add-ons for your cat</p>
+    </div>
+  </div>
+
+  <!-- Appointment Summary -->
+  <div class="appt-card">
+    <span class="label">Date:</span>
+    <span class="value" id="appt-date">Monday, 12 May 2025</span>
+    <div class="appt-divider"></div>
+    <span class="label">Time:</span>
+    <span class="value" id="appt-time">10:00 AM</span>
+  </div>
+
+  <!-- Package Services -->
+  <div class="section-block">
+    <div class="section-header">
+      <!-- Star icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      <h3>Main Grooming Packages</h3>
+    </div>
+    <p class="section-note purple">
+      <strong>All packages include:</strong> Bath &amp; Dry with Normal Shampoo, FREE Nail Clipping, Eye Cleaning, and Basic Ear Cleaning.<br />
+      <em>*Pricing highly depends on cat behaviour</em>
+    </p>
+    <div id="package-list"></div>
+  </div>
+
+  <!-- Add-on Services -->
+  <div class="section-block">
+    <div class="section-header">
+      <!-- Plus icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      <h3>Add-On Services (Optional)</h3>
+    </div>
+    <p class="section-note blue">Enhance your cat's grooming experience with these optional add-on services</p>
+    <div id="addon-list"></div>
+  </div>
+
+  <!-- Total bar -->
+  <div class="total-bar" id="total-bar" style="display:none">
+    <span>Estimated Total</span>
+    <span class="total-amount" id="total-amount">RM 0.00</span>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn-cancel" onclick="window.location.href='selectCat.html'">Back</button>
+    <button class="btn btn-confirm" id="btn-confirm" disabled onclick="window.location.href='bookingSummary.html'">Continue Booking</button>
+  </div>
+
+</div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────────────────────────
+
+const packageServices = [
+  {
+    id: 'kitten',
+    name: 'Kitten Package',
+    description: 'Gentle grooming designed for kittens under 4 months old.',
+    weightBased: {
+      prices: [
+        { weight: 'Below 1.5 kg', price: 35 },
+        { weight: '1.6 kg – 2.5 kg', price: 40 },
+      ]
+    },
+    requirements: ['Kittens must be below 4 months old']
+  },
+  {
+    id: 'short-hair',
+    name: 'Short-hair Package',
+    description: 'Bath & dry, nail clipping, eye & ear cleaning. Great for short-haired cats.',
+    price: 55
+  },
+  {
+    id: 'long-hair',
+    name: 'Long-hair Package',
+    description: 'Bath & dry, nail clipping, eye & ear cleaning. Great for long-haired cats.',
+    price: 60
+  },
+  {
+    id: 'lion-cut',
+    name: 'Lion Cut',
+    description: 'Full body shave leaving a mane around the head and fluffy tail tip.',
+    price: 120
+  }
+];
+
+const addonServices = [
+  { id: 'medicated-shampoo', name: 'Medicated Shampoo + Scrubbing', description: 'Hypoallergenic or medicated shampoo for sensitive or problem skin.', price: 10 },
+  { id: 'trimming',  name: 'Trimming - Paw & Sanitary Area', description: 'Trimming the paw and sanitary area of a cat helps maintain cleanliness, and improves comfort and hygiene.', price: 20 },
+  { id: 'flea-removal',  name: 'Flea Removal', description: 'Topical flea and tick treatment applied during the bath.', price: 20 },
+];
+
+// ─── State ───────────────────────────────────────────────────────────────────
+
+const state = {
+  selectedServices: {},   // id → { id, name, description, price, weightTier? }
+  weightSelections: {},   // id → selected weight string ('' = pending)
+};
+
+// ─── Render helpers ───────────────────────────────────────────────────────────
+
+const checkSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+const chevronSVG = `<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+function renderPackages() {
+  const container = document.getElementById('package-list');
+  container.innerHTML = '';
+
+  packageServices.forEach((svc, i) => {
+    const isSelected = isServiceSelected(svc.id);
+    const card = document.createElement('div');
+    card.className = 'service-card' + (isSelected ? ' selected-purple' : '');
+    card.style.animationDelay = `${i * 0.07}s`;
+    card.dataset.id = svc.id;
+
+    if (svc.weightBased) {
+      // Weight-based card
+      const currentWeight = state.weightSelections[svc.id] ?? null;
+      const priceDisplay = state.selectedServices[svc.id]
+        ? `RM ${state.selectedServices[svc.id].price.toFixed(2)}`
+        : '';
+
+      card.innerHTML = `
+        <div class="checkbox ${isSelected ? 'checked-purple' : ''}" data-action="toggle-package" data-id="${svc.id}">${checkSVG}</div>
+        <div class="service-body">
+          <div class="service-title-row">
+            <div>
+              <div class="service-name">${svc.name}</div>
+              <div class="service-desc">${svc.description}</div>
+            </div>
+            ${priceDisplay ? `<div class="service-price">${priceDisplay}</div>` : ''}
+          </div>
+          <div class="weight-wrapper ${isSelected ? 'visible' : ''}" id="weight-wrap-${svc.id}">
+            <select class="weight-select" data-id="${svc.id}" data-action="weight-change">
+              <option value="">-- Select weight --</option>
+              ${svc.weightBased.prices.map(p =>
+                `<option value="${p.weight}" ${currentWeight === p.weight ? 'selected' : ''}>
+                  ${p.weight} — RM ${p.price.toFixed(2)}
+                </option>`
+              ).join('')}
+            </select>
+            ${chevronSVG}
+          </div>
+        </div>`;
+
+      // Toggle checkbox click
+      card.querySelector('[data-action="toggle-package"]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleWeightBasedService(svc);
+      });
+
+      // Weight select change
+      card.querySelector('[data-action="weight-change"]').addEventListener('change', (e) => {
+        const weightTier = e.target.value;
+        if (!weightTier) {
+          // Clear price but keep selected
+          delete state.selectedServices[svc.id];
+          state.weightSelections[svc.id] = '';
+        } else {
+          const priceOption = svc.weightBased.prices.find(p => p.weight === weightTier);
+          state.weightSelections[svc.id] = weightTier;
+          state.selectedServices[svc.id] = {
+            id: svc.id, name: svc.name,
+            description: svc.description,
+            price: priceOption.price,
+            weightTier
+          };
+        }
+        refresh();
+      });
+
+    } else {
+      // Fixed-price card
+      card.innerHTML = `
+        <div class="checkbox ${isSelected ? 'checked-purple' : ''}">
+          ${checkSVG}
+        </div>
+        <div class="service-body">
+          <div class="service-title-row">
+            <div>
+              <div class="service-name">${svc.name}</div>
+              <div class="service-desc">${svc.description}</div>
+              ${svc.requirements ? `<ul class="requirements">${svc.requirements.map(r => `<li class="requirement">• ${r}</li>`).join('')}</ul>` : ''}
+            </div>
+            <div class="service-price">RM ${svc.price.toFixed(2)}</div>
+          </div>
+        </div>`;
+
+      card.addEventListener('click', () => toggleFixedService(svc));
+    }
+
+    container.appendChild(card);
+  });
+}
+
+function renderAddons() {
+  const container = document.getElementById('addon-list');
+  container.innerHTML = '';
+
+  addonServices.forEach((svc, i) => {
+    const isSelected = !!state.selectedServices[svc.id];
+    const card = document.createElement('div');
+    card.className = 'service-card addon' + (isSelected ? ' selected-blue' : '');
+    card.style.animationDelay = `${i * 0.07}s`;
+    card.innerHTML = `
+      <div class="checkbox ${isSelected ? 'checked-blue' : ''}">${checkSVG}</div>
+      <div class="service-body">
+        <div class="service-title-row">
+          <div>
+            <div class="service-name">${svc.name}</div>
+            <div class="service-desc">${svc.description}</div>
+          </div>
+          <div class="service-price">RM ${svc.price.toFixed(2)}</div>
+        </div>
+      </div>`;
+    card.addEventListener('click', () => toggleAddon(svc));
+    container.appendChild(card);
+  });
+}
+
+function updateTotals() {
+  const services = Object.values(state.selectedServices);
+  const total = services.reduce((s, svc) => s + svc.price, 0);
+
+  const totalBar = document.getElementById('total-bar');
+  const totalAmount = document.getElementById('total-amount');
+  const btnConfirm = document.getElementById('btn-confirm');
+
+  if (services.length > 0) {
+    totalBar.style.display = 'flex';
+    totalAmount.textContent = `RM ${total.toFixed(2)}`;
+    btnConfirm.disabled = false;
+  } else {
+    totalBar.style.display = 'none';
+    btnConfirm.disabled = true;
+  }
+}
+
+function refresh() {
+  renderPackages();
+  renderAddons();
+  updateTotals();
+}
+
+// ─── Interaction helpers ──────────────────────────────────────────────────────
+
+function isServiceSelected(id) {
+  return !!state.selectedServices[id] || state.weightSelections[id] !== undefined;
+}
+
+function toggleWeightBasedService(svc) {
+  if (isServiceSelected(svc.id)) {
+    delete state.selectedServices[svc.id];
+    delete state.weightSelections[svc.id];
+  } else {
+    state.weightSelections[svc.id] = '';
+  }
+  refresh();
+}
+
+function toggleFixedService(svc) {
+  if (state.selectedServices[svc.id]) {
+    delete state.selectedServices[svc.id];
+  } else {
+    state.selectedServices[svc.id] = {
+      id: svc.id, name: svc.name,
+      description: svc.description,
+      price: svc.price
+    };
+  }
+  refresh();
+}
+
+function toggleAddon(svc) {
+  if (state.selectedServices[svc.id]) {
+    delete state.selectedServices[svc.id];
+  } else {
+    state.selectedServices[svc.id] = {
+      id: svc.id, name: svc.name,
+      description: svc.description,
+      price: svc.price
+    };
+  }
+  refresh();
+}
+
+// ─── Appointment info ─────────────────────────────────────────────────────────
+
+function initAppointment() {
+  // You can pass real values via URL params: ?date=2025-05-12&time=10:00+AM
+  const params = new URLSearchParams(window.location.search);
+  const dateStr = params.get('date') || new Date().toISOString().split('T')[0];
+  const timeStr = params.get('time') || '10:00 AM';
+
+  document.getElementById('appt-date').textContent = new Date(dateStr).toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+  document.getElementById('appt-time').textContent = timeStr;
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+initAppointment();
+refresh();
+</script>
+</body>
+</html>

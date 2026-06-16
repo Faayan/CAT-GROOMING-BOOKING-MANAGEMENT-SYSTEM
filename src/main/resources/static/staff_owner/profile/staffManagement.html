@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meowy Groom – User Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/profilePage.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search by name, email, or username..." oninput="renderTable()" />
+    </div>
+
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="setFilter(this,'all')">All Users</button>
+      <button class="filter-tab" onclick="setFilter(this,'customer')">Customers</button>
+      <button class="filter-tab" onclick="setFilter(this,'staff')">Staff</button>
+      <button class="filter-tab" onclick="setFilter(this,'owner')">Owners</button>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>User</th><th>Contact</th><th>Role</th><th>Joined</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div id="emptyState" class="empty hidden">No users found.</div>
+    </div>
+  </main>
+</div>
+
+<div id="toast"><strong id="t-title"></strong><span id="t-msg"></span></div>
+
+<script>
+let users = [
+  { id:'USR001', fullname:'John Doe',       username:'johndoe',       email:'johndoe@gmail.com',       phone:'+60 12-345 6789', role:'customer', createdAt:'2024-01-15' },
+  { id:'USR002', fullname:'Jane Smith',     username:'janesmith',     email:'janesmith@gmail.com',     phone:'+60 11-234 5678', role:'customer', createdAt:'2024-01-20' },
+  { id:'USR003', fullname:'Mike Johnson',   username:'mikejohnson',   email:'mikejohnson@gmail.com',   phone:'+60 14-567 8901', role:'staff',    createdAt:'2024-01-10' },
+  { id:'USR004', fullname:'Sarah Williams', username:'sarahwilliams', email:'sarahwilliams@gmail.com', phone:'+60 13-456 7890', role:'customer', createdAt:'2024-02-01' },
+  { id:'USR005', fullname:'David Brown',    username:'davidbrown',    email:'davidbrown@gmail.com',    phone:'+60 15-678 9012', role:'customer', createdAt:'2024-02-05' },
+  { id:'USR005', fullname:'Mohd Hanafi',    username:'mohdhanafi',    email:'mohdhanafi@gmail.com',    phone:'+60 19-888 9999', role:'owner', createdAt:'2023-01-12' },
+];
+
+const userRole = 'owner';
+let filterRole = 'all', editingId = null, deletingId = null;
+
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const badgeCls = r => ({customer:'badge-customer',staff:'badge-staff',owner:'badge-owner'}[r]||'badge-customer');
+const canEdit = u => u.role !== 'owner';
+
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  return users.filter(u => {
+    const mq = u.fullname.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)||u.username.toLowerCase().includes(q);
+    return mq && (filterRole === 'all' || u.role === filterRole);
+  });
+}
+
+function renderTable() {
+  const list = getFiltered();
+  const tb = document.getElementById('tableBody');
+  const em = document.getElementById('emptyState');
+  if (!list.length) { tb.innerHTML=''; em.classList.remove('hidden'); return; }
+  em.classList.add('hidden');
+  tb.innerHTML = list.map(u => `
+    <tr>
+      <td><div class="user-cell">
+        <div class="u-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div><div class="u-name">${u.fullname}</div><div class="u-uname">@${u.username}</div></div>
+      </div></td>
+      <td><div class="c-email">${u.email}</div><div class="c-phone">${u.phone}</div></td>
+      <td><span class="badge ${badgeCls(u.role)}">${cap(u.role)}</span></td>
+      <td><span class="joined-date">${new Date(u.createdAt).toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'})}</span></td>
+      <td><div class="actions">
+        <button class="act-btn view" title="View" onclick="window.location.href='viewStaff.html?id=${u.id}'">
+          <svg viewBox="0 0 24 24" style="stroke:currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        ${canEdit(u)?`<button class="act-btn edit" title="Edit" onclick="window.location.href='editStaff.html?id=${u.id}'">
+          <svg viewBox="0 0 24 24" style="stroke:currentColor"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>`:''}
+      </div></td>
+    </tr>`).join('');
+}
+
+function setFilter(btn, role) {
+  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); filterRole = role; renderTable();
+}
+
+function showToast(title, msg) {
+  document.getElementById('t-title').textContent = title;
+  document.getElementById('t-msg').textContent   = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),4000);
+}
+
+renderTable();
+</script>
+</body>
+</html>

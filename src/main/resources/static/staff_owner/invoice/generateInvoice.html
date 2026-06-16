@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Invoice - Meowy Groom</title>
+    <style>
+        :root {
+            --purple-900: #581c87;
+            --purple-600: #9333ea;
+            --purple-500: #a855f7;
+            --pink-500: #ec4899;
+            --bg-light: #f9fafb;
+            --border-gray: #e5e7eb;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: white;
+            height: 100vh;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 260px;
+            margin-top: 64px;
+            flex: 1;
+            padding: 40px;
+            max-width: 1100px;
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--purple-500), var(--pink-500));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        /* Form Styling */
+        .form-card {
+            border: 1px solid var(--border-gray);
+            border-radius: 16px;
+            padding: 32px;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        select, input {
+            padding: 10px 14px;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--purple-500);
+        }
+
+        /* Services Selection Section */
+        .services-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .service-list-box {
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .service-list-box h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .add-btn {
+            background: white;
+            border: 1px solid var(--purple-500);
+            color: var(--purple-500);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #d1d5db;
+            padding-top: 12px;
+            margin-top: 12px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .total-price {
+            color: var(--purple-600);
+        }
+
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, var(--purple-500), var(--pink-500));
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #d1d5db;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="header-section">
+            <div class="icon-box">📄</div>
+            <div>
+                <h1 style="font-size: 28px;">Generate New Invoice</h1>
+                <p style="color: var(--text-muted);">Create a customized invoice for a customer</p>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Select Customer</label>
+                    <select>
+                        <option>Ali Ahmad</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Select Cat</label>
+                    <select>
+                        <option>Whiskers</option>
+                        <option>Mittens</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Service Date</label>
+                    <input type="date" value="2026-05-11">
+                </div>
+            </div>
+
+            <div class="services-section">
+                <div class="service-list-box">
+                    <h3>📦 Grooming Packages</h3>
+                    <div class="service-item">
+                        <span>Long-hair Package</span>
+                        <div>
+                            <span style="margin-right: 10px;">RM 60.00</span>
+                        </div>
+                    </div>
+                    <div class="service-item">
+                        <span>Lion Cut</span>
+                        <div>
+                            <span style="margin-right: 10px;">RM 120.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-list-box">
+                    <h3>✨ Add-on Services</h3>
+                    <div class="service-item">
+                        <span>Flea Removal</span>
+                        <div>
+                            <span style="margin-right: 10px;">RM 20.00</span>
+                        </div>
+                    </div>
+                    <div class="service-item">
+                        <span>Medicated Shampoo + Scrubbing</span>
+                        <div>
+                            <span style="margin-right: 10px;">RM 10.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-box">
+                <h3 style="margin-bottom: 16px;">Invoice Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>RM 210.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Total:</span>
+                    <span class="total-price">RM 210.00</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-generate" onclick="window.location.href='viewInvoice.html'"> Generate Invoice </button>
+                <button class="btn btn-cancel"  onclick="window.location.href='../confirmBooking/confirmBooking.html'"> Cancel </button>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

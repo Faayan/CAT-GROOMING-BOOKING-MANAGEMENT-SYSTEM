@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meowy Groom - Cat Information</title>
+    <style>
+        :root {
+            --purple-deep: #58435c;
+            --purple-nav: #4c1d95;
+            --pink-border: #fbcfe8;
+            --pink-hover: #fdf2f8;
+            --text-main: #374151;
+            --text-muted: #6b7280;
+            --bg-gray: #f9fafb;
+            --green-action: #00c853;
+            --red-action: #ff3d00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-main);
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--purple-deep);
+            height: 64px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .logout {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            color: var(--red-action);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* --- Main Content --- */
+        main {
+            margin-left: 260px;
+            margin-top: 64px;
+            padding: 40px;
+            max-width: 1100px;
+        }
+
+        h1 { font-size: 28px; margin-bottom: 4px; }
+        .subtitle { color: var(--text-muted); margin-bottom: 30px; }
+
+        /* --- Form Card --- */
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        label span { color: var(--red-action); }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        textarea { resize: none; height: 120px; }
+
+        /* --- Photo Section --- */
+        .photo-section {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cat-avatar-large {
+            width: 80px;
+            height: 80px;
+            background: #f3e8ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #9333ea;
+        }
+
+        /* --- Buttons --- */
+        .btn-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-register { background-color: var(--green-action); }
+        .btn-cancel { background-color: var(--red-action); }
+
+        /* --- Table Section --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px;
+            color: #4b5563;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        td {
+            padding: 20px 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .table-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .cat-info-cell div { font-weight: 600; }
+        .cat-info-cell span { font-size: 13px; color: var(--text-muted); }
+
+        .action-icons {
+            display: flex;
+            gap: 15px;
+            font-size: 20px;
+            color: var(--purple-nav);
+        }
+
+        .help-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #374151;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <h1>Cat Information</h1>
+        <p class="subtitle">View and manage customer cat information and grooming records</p>
+
+        <div class="card">
+            <h2 style="margin-bottom: 24px;">Register New Cat</h2>
+            <form>
+                <div class="form-grid">
+                    <div class="full-width">
+                        <label>Cat Name <span>*</span></label>
+                        <input type="text" placeholder="Enter cat's name">
+                    </div>
+                    <div>
+                        <label>Breed <span>*</span></label>
+                        <select>
+                            <option>Select breed</option>
+                            <option>Persian</option>
+                            <option>Siamese</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Gender</label>
+                        <select>
+                            <option>Select gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Age (years) <span>*</span></label>
+                        <input type="text" placeholder="e.g., 3">
+                    </div>
+                    <div>
+                        <label>Weight (kg)</label>
+                        <input type="text" placeholder="e.g., 4.5">
+                    </div>
+                    <div class="full-width">
+                        <label>Special Notes</label>
+                        <textarea placeholder="Any special care instructions, allergies, or behavioral notes..."></textarea>
+                    </div>
+                </div>
+
+                <div class="photo-section">
+                    <div class="cat-avatar-large">🐱</div>
+                    <div style="color: var(--text-muted); font-size: 14px;">Hover over photo to change</div>
+                </div>
+
+                <div class="btn-row">
+                    <button type="button" class="btn btn-register" 
+                            onclick="window.location.href='customerCat.html'">
+                        Register Cat
+                    </button>
+                    <button type="button" class="btn btn-cancel" 
+                            onclick="window.location.href='customerCat.html'">
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+    <div class="help-btn">?</div>
+</body>
+</html>

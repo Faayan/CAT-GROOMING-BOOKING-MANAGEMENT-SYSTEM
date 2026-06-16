@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Appointment Modal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red-50:    #fff1f2;
+      --red-100:   #fee2e2;
+      --red-500:   #ef4444;
+      --red-600:   #dc2626;
+      --red-700:   #b91c1c;
+      --gray-100:  #f3f4f6;
+      --gray-200:  #e5e7eb;
+      --gray-300:  #d1d5db;
+      --gray-500:  #6b7280;
+      --gray-700:  #374151;
+      --gray-900:  #111827;
+      --white:     #ffffff;
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.18);
+      --radius:    18px;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #f5f3ff 0%, #fdf2f8 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: var(--gray-900);
+    }
+
+    /* Demo trigger button */
+    .trigger-btn {
+      padding: 12px 32px;
+      background: var(--red-600);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .18s, transform .1s, box-shadow .18s;
+      box-shadow: 0 4px 16px rgba(220,38,38,.3);
+    }
+
+    .trigger-btn:hover { background: var(--red-700); box-shadow: 0 6px 20px rgba(220,38,38,.4); }
+    .trigger-btn:active { transform: scale(.97); }
+    .trigger-btn svg { width: 18px; height: 18px; }
+
+    .trigger-hint { margin-top: 12px; font-size: .82rem; color: var(--gray-500); }
+
+    /* Overlay */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .overlay.open { display: flex; }
+
+    /* Modal */
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 440px;
+      animation: popIn .22s cubic-bezier(.34,1.56,.64,1) both;
+      overflow: hidden;
+    }
+
+    .modal-body { padding: 32px 28px 24px; }
+
+    /* Icon + title row */
+    .modal-title-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .alert-icon {
+      width: 52px; height: 52px;
+      background: var(--red-100);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .alert-icon svg { width: 24px; height: 24px; color: var(--red-600); }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--gray-900);
+    }
+
+    /* Description */
+    .modal-desc {
+      font-size: .92rem;
+      color: var(--gray-500);
+      line-height: 1.65;
+      padding: 14px 16px;
+      background: var(--red-50);
+      border-radius: 10px;
+      border: 1px solid var(--red-100);
+    }
+
+    .modal-desc strong { color: var(--gray-900); }
+    .modal-desc .warning-text { color: var(--red-600); font-weight: 700; }
+
+    /* Footer buttons */
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      padding: 0 28px 28px;
+    }
+
+    .btn {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 11px 18px;
+      border-radius: 9px;
+      border: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: .9rem; font-weight: 700;
+      cursor: pointer;
+      transition: background .18s, box-shadow .18s, transform .1s;
+    }
+
+    .btn:active { transform: scale(.97); }
+    .btn svg { width: 16px; height: 16px; }
+
+    .btn-cancel {
+      background: var(--white);
+      color: var(--gray-700);
+      border: 2px solid var(--gray-200);
+    }
+
+    .btn-cancel:hover { background: var(--gray-100); border-color: var(--gray-300); }
+
+    .btn-delete {
+      background: var(--red-600);
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(220,38,38,.25);
+    }
+
+    .btn-delete:hover { background: var(--red-700); box-shadow: 0 4px 14px rgba(220,38,38,.35); }
+
+    /* Success feedback */
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: var(--gray-900);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: .88rem; font-weight: 600;
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+      animation: slideUp .25s ease both;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    /* Animations */
+    @keyframes popIn   { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(16px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <!-- Demo trigger -->
+  <button class="trigger-btn" onclick="openModal('APT-2024-047')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+    </svg>
+    Delete Appointment
+  </button>
+  <p class="trigger-hint">Click to open the delete confirmation modal</p>
+
+  <!-- Modal overlay -->
+  <div class="overlay" id="delete-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+      <div class="modal-body">
+        <!-- Icon + Title -->
+        <div class="modal-title-row">
+          <div class="alert-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <h2 class="modal-title" id="modal-title">Delete Appointment?</h2>
+        </div>
+
+        <!-- Description -->
+        <p class="modal-desc">
+          Are you sure you want to delete <strong id="appt-id-text">Appointment #—</strong>?<br><br>
+          <span class="warning-text">This action cannot be undone.</span>
+        </p>
+      </div>
+
+      <!-- Buttons -->
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="closeModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          Cancel
+        </button>
+        <button class="btn btn-delete" onclick="confirmDelete()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+<script>
+  let currentAppointmentId = '';
+
+  function openModal(appointmentId) {
+    currentAppointmentId = appointmentId;
+    document.getElementById('appt-id-text').textContent = 'Appointment #' + appointmentId;
+    document.getElementById('delete-overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('delete-overlay').classList.remove('open');
+  }
+
+  function confirmDelete() {
+    closeModal();
+    showToast('Appointment #' + currentAppointmentId + ' deleted successfully.');
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 3200);
+  }
+
+  // Close on overlay click
+  document.getElementById('delete-overlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+</body>
+</html>

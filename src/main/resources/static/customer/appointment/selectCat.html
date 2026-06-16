@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Select Your Cat</title>
+<style>
+  *, *::before, *::after { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(135deg, #fdf4ff 0%, #fdf2f8 50%, #eff6ff 100%);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.container {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Page header ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.header-icon {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  display: flex; align-items: center; justify-content: center;
+}
+.header-icon svg { width: 28px; height: 28px; color: #fff; }
+.page-header h2 { font-size: 1.5rem; font-weight: 700; color: #1e1b4b; }
+.page-header p  { color: #6b7280; font-size: 0.875rem; margin-top: 0.2rem; }
+
+/* ── Card base ── */
+.card {
+   background: #fff;
+  border-radius: 14px;
+  border: 1.5px solid #e5e7eb;
+  padding: 1.25rem;     
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  margin-bottom: 1rem;
+}
+
+/* ── Appointment summary ── */
+.appt-card {
+  background: linear-gradient(135deg, #faf5ff, #fdf2f8);
+  border-color: #d8b4fe;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+.appt-item { display: flex; align-items: center; gap: 0.4rem; }
+.appt-item .lbl { color: #6b7280; }
+.appt-item .val { color: #581c87; font-weight: 600; }
+.appt-divider { width: 1px; height: 16px; background: #c4b5fd; }
+
+/* ── Info card ── */
+.info-card {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.info-card svg { width: 20px; height: 20px; color: #2563eb; flex-shrink: 0; margin-top: 1px; }
+.info-card p   { font-size: 0.85rem; color: #1e3a8a; line-height: 1.5; }
+.info-card p + p { color: #3b82f6; margin-top: 0.2rem; }
+
+/* ── No cats state ── */
+.empty-card {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+.empty-card svg { width: 64px; height: 64px; color: #d1d5db; margin: 0 auto 1rem; display: block; }
+.empty-card h3  { font-size: 1.15rem; color: #4b5563; margin-bottom: 0.4rem; }
+.empty-card p   { font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.5rem; }
+
+/* ── Cat selection cards ── */
+.cat-card {
+   display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 2px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  user-select: none;
+  margin-bottom: 0.75rem;
+}
+.cat-card:hover           { border-color: #c084fc; box-shadow: 0 2px 12px rgba(168,85,247,0.12); }
+.cat-card.selected        { border-color: #a855f7; background: #faf5ff; box-shadow: 0 2px 14px rgba(168,85,247,0.18); }
+
+/* Radio button */
+.cat-checkbox {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.cat-card.selected .cat-checkbox { background: #a855f7; border-color: #a855f7; }
+.cat-checkbox::after {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  display: none;
+}
+.cat-card.selected .cat-checkbox::after { display: block; }
+
+/* Cat avatar */
+.cat-avatar {
+  width: 48px; height: 48px; flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e9d5ff, #fbcfe8);
+  color: #7c3aed;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.cat-card.selected .cat-avatar { background: #a855f7; color: #fff; }
+.cat-avatar svg { width: 22px; height: 22px; }
+
+/* Cat name */
+.cat-name {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #111827;
+  transition: color 0.15s;
+}
+.cat-card.selected .cat-name { color: #581c87; }
+
+/* Chevron */
+.cat-chevron { display: none; }
+.cat-card.selected .cat-chevron { display: block; }
+.cat-chevron svg { width: 20px; height: 20px; color: #a855f7; }
+
+/* ── Selection summary ── */
+.summary-card {
+  background: #f0fdf4;
+  border-color: #86efac;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  color: #14532d;
+  animation: fadeIn 0.2s ease;
+}
+.summary-card svg { width: 18px; height: 18px; color: #16a34a; flex-shrink: 0; }
+@keyframes fadeIn { 
+  from { opacity:0; transform:translateY(4px); } 
+  to { opacity:1; transform:translateY(0); } 
+}
+
+/* ── Action buttons ── */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;             /* consistent gap between buttons */
+  margin-top: 1.5rem;
+}
+.btn {
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, opacity 0.15s;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+}
+.btn-cancel  { background: #ef4444; color: #fff; }
+.btn-cancel:hover  { background: #dc2626; box-shadow: 0 2px 8px rgba(239,68,68,0.3); }
+.btn-proceed { background: #22c55e; color: #fff; }
+.btn-proceed:hover:not(:disabled) { background: #16a34a; box-shadow: 0 2px 8px rgba(34,197,94,0.3); }
+.btn-proceed:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-back { background: linear-gradient(135deg,#a855f7,#ec4899); color:#fff; }
+.btn-back:hover { box-shadow: 0 2px 10px rgba(168,85,247,0.35); }
+
+/* SVG base */
+svg { 
+  display:inline-block; 
+  vertical-align:middle; 
+  fill:none; 
+  stroke:currentColor; 
+  stroke-width:2; 
+  stroke-linecap:round; 
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Dynamic content rendered here -->
+  <div id="app"></div>
+
+</div>
+
+<!-- SVG icon templates -->
+<template id="svg-cat">
+  <svg viewBox="0 0 24 24"><path d="M12 5c-4 0-7 3-7 7v3l-1 1v2h16v-2l-1-1v-3c0-4-3-7-7-7z"/><path d="M8 5V3l3 3M16 5V3l-3 3"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M10 16s1 1.5 2 1.5 2-1.5 2-1.5"/></svg>
+</template>
+<template id="svg-check">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+</template>
+<template id="svg-alert">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+</template>
+<template id="svg-chevron-right">
+  <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+</template>
+<template id="svg-check-circle">
+  <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+</template>
+
+<script>
+  // ── Data ──
+  const ALL_CATS = {
+    aliahmad: [
+      { id:'1', name:'Whiskers', breed:'Persian',           age:3, gender:'Female' },
+      { id:'2', name:'Mittens',  breed:'Siamese',           age:2, gender:'Male'   },
+    ],
+    sarahlee: [
+      { id:'3', name:'Shadow',   breed:'British Shorthair', age:5, gender:'Female' },
+      { id:'4', name:'Luna',     breed:'Maine Coon',        age:1, gender:'Female' },
+    ],
+    johndoe: [
+      { id:'5', name:'Bella',    breed:'Ragdoll',           age:4, gender:'Female' },
+    ],
+    unknown: []
+  };
+
+  // ── State ──
+  let currentUser   = 'aliahmad';
+  let selectedCatId = null;          // single selection (radio behaviour)
+  const DEMO_DATE   = '2026-06-15';
+  const DEMO_TIME   = '10:00 AM';
+
+  // ── Helpers ──
+  function icon(name) {
+    return document.getElementById('svg-' + name).innerHTML;
+  }
+
+  function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      weekday:'long', year:'numeric', month:'long', day:'numeric'
+    });
+  }
+
+  function toggleCat(id) {
+    selectedCatId = (selectedCatId === id) ? null : id;
+    render();
+  }
+
+  function handleProceed() {
+    if (!selectedCatId) {
+      alert('Please select a cat for grooming.');
+      return;
+    }
+    const cat = ALL_CATS[currentUser].find(c => c.id === selectedCatId);
+    alert(`Proceeding with: ${cat.name}\nDate: ${formatDate(DEMO_DATE)}\nTime: ${DEMO_TIME}`);
+  }
+
+  function handleCancel() {
+    if (confirm('Cancel and go back to appointment availability?')) {
+      alert('Navigating back to Check Availability...');
+    }
+  }
+
+  // ── Render ──
+  function render() {
+    const cats = ALL_CATS[currentUser] || [];
+    const app  = document.getElementById('app');
+
+    // Page header
+    let html = `
+      <div class="page-header">
+        <div class="header-icon">${icon('cat')}</div>
+        <div>
+          <h2>Select Your Cat</h2>
+          <p>Choose one cat you want to book for grooming</p>
+        </div>
+      </div>`;
+
+    // ── No cats state ──
+    if (cats.length === 0) {
+      html += `
+        <div class="card empty-card">
+          ${icon('cat')}
+          <h3>No Cats Registered</h3>
+          <p>You need to register at least one cat before booking an appointment.</p>
+          <button class="btn btn-back" onclick="handleCancel()">Back</button>
+        </div>`;
+      app.innerHTML = html;
+      return;
+    }
+
+    // ── Appointment summary ──
+    html += `
+      <div class="card appt-card">
+        <div class="appt-item">
+          <span class="lbl">Date:</span>
+          <span class="val">${formatDate(DEMO_DATE)}</span>
+        </div>
+        <div class="appt-divider"></div>
+        <div class="appt-item">
+          <span class="lbl">Time:</span>
+          <span class="val">${DEMO_TIME}</span>
+        </div>
+      </div>`;
+
+    // ── Info banner ──
+    html += `
+      <div class="card info-card">
+        ${icon('alert')}
+        <div>
+          <p><strong>One cat per appointment.</strong> Please select one cat for this grooming session.</p>
+          <p>To book for another cat, please create a separate appointment.</p>
+        </div>
+      </div>`;
+
+    // ── Cat cards ──
+    html += `<div style="display:flex;flex-direction:column;gap:0.75rem;">`;
+    cats.forEach(cat => {
+      const sel = selectedCatId === cat.id;
+      html += `
+        <div class="cat-card ${sel ? 'selected' : ''}" onclick="toggleCat('${cat.id}')">
+          <div class="cat-checkbox"></div>
+          <div class="cat-avatar">${icon('cat')}</div>
+          <div class="cat-name">${cat.name}</div>
+          <div class="cat-chevron">${icon('chevron-right')}</div>
+        </div>`;
+    });
+    html += `</div>`;
+
+    // ── Selection summary ──
+    if (selectedCatId) {
+      const cat = cats.find(c => c.id === selectedCatId);
+      html += `
+        <div class="card summary-card">
+          ${icon('check-circle')}
+          <span><strong>${cat.name}</strong> selected for grooming</span>
+        </div>`;
+    }
+
+    // ── Action buttons ──
+    html += `
+      <div class="actions">
+        <button class="btn btn-cancel" onclick="window.location.href='checkAvailability.html'">Back</button>
+        <button class="btn btn-proceed" onclick="window.location.href='chooseServices.html'" ${!selectedCatId ? 'disabled' : ''}>
+          Continue ${icon('chevron-right')}
+        </button>
+      </div>`;
+
+    app.innerHTML = html;
+  }
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meowy Groom | Sales Report</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f3f4f6;
+      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    .transition-all {
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-6">
+  <div id="app" class="max-w-6xl mx-auto"></div>
+
+  <script>
+    // ========== STATE ==========
+    let selectedFilter = 'daily';
+    let startDate = '';
+    let endDate = '';
+    let selectedDate = '';
+    let selectedMonthName = 'January';
+    let selectedMonthYear = '2026';
+    let selectedYear = '2026';
+    let reportGenerated = false;
+
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const years = ['2026', '2025', '2024', '2023', '2022'];
+
+    // Helper functions
+    function formatDateShort(dateString) {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear());
+      return `${day}/${month}/${year}`;
+    }
+
+    function formatDateLong(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-MY', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    // Get report data based on filter
+    function getReportData() {
+      switch (selectedFilter) {
+        case 'daily':
+          return {
+            period: formatDateLong(selectedDate || '2026-01-10'),
+            totalRevenue: 1580.00,
+            totalTransactions: 24,
+            averageTransaction: 65.83,
+            transactions: [
+              { date: '2026-01-10', time: '09:00 AM', transactions: 3, revenue: 198.00 },
+              { date: '2026-01-10', time: '10:00 AM', transactions: 4, revenue: 264.00 },
+              { date: '2026-01-10', time: '11:00 AM', transactions: 5, revenue: 330.00 },
+              { date: '2026-01-10', time: '01:00 PM', transactions: 3, revenue: 198.00 },
+              { date: '2026-01-10', time: '02:00 PM', transactions: 4, revenue: 264.00 },
+              { date: '2026-01-10', time: '03:00 PM', transactions: 5, revenue: 326.00 },
+            ]
+          };
+        
+        case 'monthly':
+          return {
+            period: `${selectedMonthName} ${selectedMonthYear}`,
+            totalRevenue: 12450.00,
+            totalTransactions: 187,
+            averageTransaction: 66.58,
+            transactions: [
+              { date: '2026-01-10', transactions: 24, revenue: 1580.00 },
+              { date: '2026-01-09', transactions: 28, revenue: 1840.00 },
+              { date: '2026-01-08', transactions: 22, revenue: 1450.00 },
+              { date: '2026-01-07', transactions: 26, revenue: 1720.00 },
+              { date: '2026-01-06', transactions: 30, revenue: 1980.00 },
+              { date: '2026-01-05', transactions: 20, revenue: 1320.00 },
+              { date: '2026-01-04', transactions: 25, revenue: 1650.00 },
+              { date: '2026-01-03', transactions: 18, revenue: 1190.00 },
+            ]
+          };
+        
+        case 'yearly':
+          return {
+            period: `Year ${selectedYear}`,
+            totalRevenue: 12450.00,
+            totalTransactions: 187,
+            averageTransaction: 66.58,
+            transactions: [
+              { date: 'January 2026', transactions: 187, revenue: 12450.00 },
+            ]
+          };
+        
+        case 'custom':
+          if (!startDate || !endDate) {
+            return {
+              period: 'Select date range',
+              totalRevenue: 0,
+              totalTransactions: 0,
+              averageTransaction: 0,
+              transactions: []
+            };
+          }
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+          const customTransactions = [];
+          let customTotal = 0;
+          let customTransCount = 0;
+          
+          for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+            const dateStr = d.toISOString().split('T')[0];
+            const transCount = Math.floor(Math.random() * 15) + 15;
+            const revenue = transCount * (Math.random() * 30 + 50);
+            customTransactions.push({
+              date: dateStr,
+              transactions: transCount,
+              revenue: revenue
+            });
+            customTotal += revenue;
+            customTransCount += transCount;
+          }
+          
+          return {
+            period: `${formatDateShort(start.toISOString())} - ${formatDateShort(end.toISOString())}`,
+            totalRevenue: customTotal,
+            totalTransactions: customTransCount,
+            averageTransaction: customTransCount > 0 ? customTotal / customTransCount : 0,
+            transactions: customTransactions
+          };
+        
+        default:
+          return {
+            period: '',
+            totalRevenue: 0,
+            totalTransactions: 0,
+            averageTransaction: 0,
+            transactions: []
+          };
+      }
+    }
+
+    function handleGenerateReport() {
+      if (selectedFilter === 'custom' && (!startDate || !endDate)) {
+        alert('Please select both start and end dates for custom period');
+        return;
+      }
+      if (selectedFilter === 'daily' && !selectedDate) {
+        alert('Please select a date');
+        return;
+      }
+      reportGenerated = true;
+      render();
+    }
+
+    function resetAndGoBack() {
+      reportGenerated = false;
+      selectedFilter = 'daily';
+      selectedDate = '';
+      startDate = '';
+      endDate = '';
+      selectedMonthName = 'January';
+      selectedMonthYear = '2026';
+      selectedYear = '2026';
+      render();
+    }
+
+    // ========== RENDER FUNCTIONS ==========
+    function render() {
+      const container = document.getElementById('app');
+      
+      if (!reportGenerated) {
+        container.innerHTML = renderSalesFilter();
+      } else {
+        container.innerHTML = renderSalesReport();
+      }
+      
+      lucide.createIcons();
+      attachEventListeners();
+    }
+
+    // Sales Report Filter Page
+    function renderSalesFilter() {
+      return `
+        <div class="space-y-6">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+              <i data-lucide="dollar-sign" class="w-7 h-7 text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900">Sales Report</h2>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="filter" class="w-5 h-5 text-purple-600"></i>
+              Select Report Period
+            </h3>
+            
+            <!-- Filter Buttons -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              ${['daily', 'monthly', 'yearly', 'custom'].map(filter => {
+                const labels = { daily: 'Daily', monthly: 'Monthly', yearly: 'Yearly', custom: 'Custom' };
+                const icons = { daily: 'calendar', monthly: 'calendar', yearly: 'calendar', custom: 'filter' };
+                return `
+                  <button onclick="window.setFilter('${filter}')" 
+                          class="p-4 rounded-lg border-2 transition-all duration-300 flex flex-col items-center gap-2
+                                 ${selectedFilter === filter ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'}">
+                    <i data-lucide="${icons[filter]}" class="w-6 h-6 ${selectedFilter === filter ? 'text-purple-600' : 'text-gray-500'}"></i>
+                    <span class="text-sm ${selectedFilter === filter ? 'text-purple-600 font-medium' : 'text-gray-700'}">${labels[filter]}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Daily Date Picker -->
+            ${selectedFilter === 'daily' ? `
+              <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-6">
+                <h4 class="text-sm text-purple-900 font-medium mb-3">Select Date</h4>
+                <div>
+                  <label class="block text-sm text-gray-700 mb-2">Date</label>
+                  <input type="date" id="dailyDate" value="${selectedDate}" 
+                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Monthly Picker -->
+            ${selectedFilter === 'monthly' ? `
+              <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-6">
+                <h4 class="text-sm text-purple-900 font-medium mb-3">Select Month and Year</h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm text-gray-700 mb-2">Month</label>
+                    <select id="monthName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                      ${months.map(m => `<option value="${m}" ${selectedMonthName === m ? 'selected' : ''}>${m}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm text-gray-700 mb-2">Year</label>
+                    <select id="monthYear" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                      ${years.map(y => `<option value="${y}" ${selectedMonthYear === y ? 'selected' : ''}>${y}</option>`).join('')}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Yearly Picker -->
+            ${selectedFilter === 'yearly' ? `
+              <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-6">
+                <h4 class="text-sm text-purple-900 font-medium mb-3">Select Year</h4>
+                <div>
+                  <label class="block text-sm text-gray-700 mb-2">Year</label>
+                  <select id="yearSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    ${years.map(y => `<option value="${y}" ${selectedYear === y ? 'selected' : ''}>${y}</option>`).join('')}
+                  </select>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Custom Date Range -->
+            ${selectedFilter === 'custom' ? `
+              <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-6">
+                <h4 class="text-sm text-purple-900 font-medium mb-3">Select Custom Date Range</h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm text-gray-700 mb-2">Start Date</label>
+                    <input type="date" id="startDate" value="${startDate}" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                  </div>
+                  <div>
+                    <label class="block text-sm text-gray-700 mb-2">End Date</label>
+                    <input type="date" id="endDate" value="${endDate}" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Generate Button - no icon -->
+          <div class="flex justify-end">
+            <button onclick="window.generateReport()" 
+                    class="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:shadow-lg transition-all duration-300">
+              Generate Report
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Sales Report Result Page
+    function renderSalesReport() {
+      const data = getReportData();
+      
+      return `
+        <div class="space-y-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                <i data-lucide="dollar-sign" class="w-7 h-7 text-white"></i>
+              </div>
+              <div>
+                <h2 class="text-2xl font-bold text-gray-900">Sales Report</h2>
+                <p class="text-gray-500">${data.period}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction Table -->
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="trending-up" class="w-5 h-5 text-green-600"></i>
+              Transaction Details
+            </h3>
+            
+            ${data.transactions.length > 0 ? `
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="border-b border-gray-200">
+                      <th class="text-left py-3 px-4 text-sm text-gray-600">${selectedFilter === 'daily' ? 'Time' : 'Date'}</th>
+                      <th class="text-left py-3 px-4 text-sm text-gray-600">Transactions</th>
+                      <th class="text-left py-3 px-4 text-sm text-gray-600">Revenue</th>
+                      <th class="text-left py-3 px-4 text-sm text-gray-600">Avg. Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${data.transactions.map(row => `
+                      <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-4 text-sm">${selectedFilter === 'daily' ? row.time : (selectedFilter === 'yearly' ? row.date : formatDateShort(row.date))}</td>
+                        <td class="py-3 px-4 text-sm">${row.transactions}</td>
+                        <td class="py-3 px-4 text-sm">RM ${row.revenue.toFixed(2)}</td>
+                        <td class="py-3 px-4 text-sm">RM ${(row.revenue / row.transactions).toFixed(2)}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                  <tfoot>
+                    <tr class="border-t-2 border-gray-300 bg-gray-50">
+                      <td class="py-3 px-4 text-sm font-semibold">Total</td>
+                      <td class="py-3 px-4 text-sm font-semibold">${data.totalTransactions}</td>
+                      <td class="py-3 px-4 text-sm font-semibold">RM ${data.totalRevenue.toFixed(2)}</td>
+                      <td class="py-3 px-4 text-sm font-semibold">RM ${data.averageTransaction.toFixed(2)}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            ` : `
+              <p class="text-gray-500 text-center py-8">No transaction data available for this period</p>
+            `}
+          </div>
+
+          <!-- Action Buttons - no icons -->
+          <div class="flex justify-end gap-4">
+            <button onclick="window.print()" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all">
+              Download PDF
+            </button>
+            <button onclick="window.generateNewReport()" class="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:shadow-lg transition-all">
+              Change Filter
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Global window functions
+    window.setFilter = (filter) => {
+      selectedFilter = filter;
+      render();
+    };
+
+    window.generateReport = () => {
+      if (selectedFilter === 'daily') {
+        const dateInput = document.getElementById('dailyDate');
+        if (dateInput) selectedDate = dateInput.value;
+        if (!selectedDate) {
+          alert('Please select a date');
+          return;
+        }
+      } else if (selectedFilter === 'monthly') {
+        const monthInput = document.getElementById('monthName');
+        const yearInput = document.getElementById('monthYear');
+        if (monthInput) selectedMonthName = monthInput.value;
+        if (yearInput) selectedMonthYear = yearInput.value;
+      } else if (selectedFilter === 'yearly') {
+        const yearInput = document.getElementById('yearSelect');
+        if (yearInput) selectedYear = yearInput.value;
+      } else if (selectedFilter === 'custom') {
+        const startInput = document.getElementById('startDate');
+        const endInput = document.getElementById('endDate');
+        if (startInput) startDate = startInput.value;
+        if (endInput) endDate = endInput.value;
+        if (!startDate || !endDate) {
+          alert('Please select both start and end dates');
+          return;
+        }
+      }
+      reportGenerated = true;
+      render();
+    };
+
+    window.generateNewReport = () => {
+      reportGenerated = false;
+      render();
+    };
+
+    function attachEventListeners() {
+      // No additional listeners needed
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>

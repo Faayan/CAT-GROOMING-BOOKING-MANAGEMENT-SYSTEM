@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Appointment Management – Meowy Groom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Nunito',sans-serif;background:#f3f4f6;color:#111827;min-height:100vh;padding:2rem}
+    .container{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem}
+
+    /* Header */
+    .page-header{display:flex;align-items:center;gap:1rem}
+    .page-header .icon{width:56px;height:56px;background:linear-gradient(135deg,#8b5cf6,#ec4899);border-radius:12px;display:flex;align-items:center;justify-content:center}
+    .page-header .icon svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .page-header h2{font-size:1.5rem;font-weight:800;color:#111}
+    .page-header p{color:#6b7280;font-size:.9rem;margin-top:.25rem}
+
+    /* Summary cards */
+    .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    .summary-card{background:#fff;border-radius:12px;padding:1rem;border:2px solid}
+    .summary-card.amber{background:linear-gradient(135deg,#fffbeb,#fff7ed);border-color:#fbbf24}
+    .summary-card.blue{background:linear-gradient(135deg,#eff6ff,#ecfeff);border-color:#93c5fd}
+    .summary-card.green{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border-color:#86efac}
+    .summary-card.purple{background:linear-gradient(135deg,#faf5ff,#fdf4ff);border-color:#d8b4fe}
+    .summary-card .inner{display:flex;align-items:center;justify-content:space-between}
+    .summary-card .label{font-size:.85rem;margin-bottom:.25rem}
+    .summary-card.amber .label{color:#b45309}.summary-card.blue .label{color:#1d4ed8}
+    .summary-card.green .label{color:#15803d}.summary-card.purple .label{color:#7e22ce}
+    .summary-card .count{font-size:1.75rem;font-weight:900}
+    .summary-card.amber .count{color:#78350f}.summary-card.blue .count{color:#1e3a5f}
+    .summary-card.green .count{color:#14532d}.summary-card.purple .count{color:#581c87}
+    .summary-card .icon-box{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .summary-card.amber .icon-box{background:#fde68a}.summary-card.blue .icon-box{background:#bfdbfe}
+    .summary-card.green .icon-box{background:#bbf7d0}.summary-card.purple .icon-box{background:#e9d5ff}
+    .summary-card .icon-box svg{width:24px;height:24px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+    .summary-card.amber .icon-box svg{stroke:#b45309}.summary-card.blue .icon-box svg{stroke:#1d4ed8}
+    .summary-card.green .icon-box svg{stroke:#15803d}.summary-card.purple .icon-box svg{stroke:#7e22ce}
+
+    /* Edit button */
+    .edit-btn-row{display:flex;justify-content:flex-end}
+    .btn-purple{padding:.65rem 1.5rem;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s}
+    .btn-purple:hover{background:#6d28d9}
+
+    /* List card */
+    .card{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+    .card h3{font-size:1.1rem;font-weight:700;margin-bottom:1rem}
+
+    .apt-list{display:flex;flex-direction:column;gap:.75rem}
+    .apt-item{display:flex;align-items:center;justify-content:space-between;padding:1rem;border:2px solid #e5e7eb;border-radius:12px;transition:all .2s;gap:1rem}
+    .apt-item:hover{border-color:#a78bfa;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+    .apt-item .left{display:flex;align-items:center;gap:1rem;flex:1}
+    .status-icon{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .status-icon.pending{background:#fef3c7}.status-icon.confirmed{background:#dbeafe}.status-icon.completed{background:#dcfce7}
+    .status-icon svg{width:24px;height:24px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .status-icon.pending svg{stroke:#d97706}.status-icon.confirmed svg{stroke:#2563eb}.status-icon.completed svg{stroke:#16a34a}
+    .apt-info h4{font-size:.95rem;font-weight:700;margin-bottom:.25rem}
+    .apt-info .meta{display:flex;align-items:center;gap:.75rem;font-size:.82rem;color:#6b7280}
+    .apt-info .meta .sep{width:1px;height:14px;background:#d1d5db}
+    .apt-info .meta svg{width:14px;height:14px;stroke:#6b7280;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .badge{display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .6rem;border-radius:9999px;font-size:.72rem;font-weight:700}
+    .badge.pending{background:#fef3c7;color:#b45309}.badge.confirmed{background:#dbeafe;color:#1d4ed8}.badge.completed{background:#dcfce7;color:#15803d}
+    .badge svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .apt-amount{font-size:1.1rem;font-weight:800;color:#7c3aed;margin-right:.5rem;white-space:nowrap}
+
+    /* Action buttons — match screenshot */
+    .apt-actions{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+
+    /* View Details – purple with eye icon */
+    .btn-view{
+      padding:.45rem 1rem;
+      background:#7c3aed;color:#fff;
+      border:none;border-radius:8px;
+      font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;
+      cursor:pointer;transition:background .2s;
+      display:flex;align-items:center;gap:.4rem;
+    }
+    .btn-view:hover{background:#6d28d9}
+    .btn-view svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+    /* Edit – blue */
+    .btn-edit-action{
+      padding:.45rem 1rem;
+      background:#2563eb;color:#fff;
+      border:none;border-radius:8px;
+      font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;
+      cursor:pointer;transition:background .2s;
+      display:flex;align-items:center;gap:.4rem;
+    }
+    .btn-edit-action:hover{background:#1d4ed8}
+    .btn-edit-action svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+    /* Delete – outlined red icon */
+    .btn-del{
+      padding:.45rem .6rem;
+      background:#fff;
+      border:1.5px solid #fca5a5;
+      border-radius:8px;
+      cursor:pointer;transition:background .2s,border-color .2s;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .btn-del:hover{background:#fef2f2;border-color:#ef4444}
+    .btn-del svg{width:17px;height:17px;fill:none;stroke:#dc2626;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+    /* Delete Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;padding:1rem}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;padding:1.5rem;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+
+    .modal-icon-wrap{
+      width:52px;height:52px;
+      background:#fecaca;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:1rem;
+    }
+    .modal-icon-wrap svg{width:26px;height:26px;fill:none;stroke:#7f1d1d;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+    .modal h3{font-size:1.15rem;font-weight:800;margin-bottom:.4rem;color:#111}
+    .modal p{color:#4b5563;font-size:.9rem;margin-bottom:1rem;line-height:1.6}
+    .modal-info{
+      background:#f9fafb;border:1px solid #e5e7eb;
+      border-radius:8px;padding:.75rem 1rem;
+      margin-bottom:1.25rem;
+      font-size:.85rem;font-family:monospace;color:#374151;
+    }
+    .modal-btns{display:flex;gap:.75rem}
+    .btn-modal-delete{
+      flex:1;padding:.65rem;
+      background:#dc2626;color:#fff;
+      border:none;border-radius:8px;
+      font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;
+      cursor:pointer;transition:background .2s;
+      display:flex;align-items:center;justify-content:center;gap:.4rem;
+    }
+    .btn-modal-delete:hover{background:#b91c1c}
+    .btn-modal-delete svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .btn-modal-cancel{
+      flex:1;padding:.65rem;
+      background:#f3f4f6;color:#374151;
+      border:1px solid #d1d5db;border-radius:8px;
+      font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;
+      cursor:pointer;transition:background .2s;
+    }
+    .btn-modal-cancel:hover{background:#e5e7eb}
+
+    @media(max-width:800px){.summary-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:500px){.summary-grid{grid-template-columns:1fr}.apt-item{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div>
+      <h2>Appointment Management</h2>
+      <p>View and manage all customer appointments</p>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-grid">
+    <div class="summary-card amber">
+      <div class="inner">
+        <div><p class="label">Pending</p><p class="count" id="cnt-pending">2</p></div>
+        <div class="icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      </div>
+    </div>
+    <div class="summary-card blue">
+      <div class="inner">
+        <div><p class="label">Confirmed</p><p class="count" id="cnt-confirmed">1</p></div>
+        <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      </div>
+    </div>
+    <div class="summary-card green">
+      <div class="inner">
+        <div><p class="label">Completed</p><p class="count" id="cnt-completed">1</p></div>
+        <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      </div>
+    </div>
+    <div class="summary-card purple">
+      <div class="inner">
+        <div><p class="label">Total</p><p class="count" id="cnt-total">4</p></div>
+        <div class="icon-box"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Services Btn -->
+  <div class="edit-btn-row">
+    <button class="btn-purple" onclick="window.location.href='editGroomingServices.html'">Edit Grooming Services</button>
+  </div>
+
+  <!-- Appointments List -->
+  <div class="card">
+    <h3>All Appointments</h3>
+    <div class="apt-list" id="apt-list"></div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <div class="modal-icon-wrap">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+    </div>
+    <h3>Delete Appointment</h3>
+    <p>Are you sure you want to delete this appointment? This action <strong>cannot be undone</strong>.</p>
+    <div class="modal-info" id="delete-info"></div>
+    <div class="modal-btns">
+      <button class="btn-modal-delete" onclick="confirmDelete()">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Yes, Delete
+      </button>
+      <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const appointments = [
+  {id:'APT-001',date:'2025-01-20',time:'10:00 AM',customer:'Ali Ahmad',status:'pending',total:100},
+  {id:'APT-002',date:'2025-01-21',time:'2:00 PM',customer:'Sarah Lee',status:'confirmed',total:240},
+  {id:'APT-003',date:'2025-01-22',time:'11:30 AM',customer:'John Doe',status:'pending',total:120},
+  {id:'APT-004',date:'2025-01-23',time:'3:30 PM',customer:'Siti Rahman',status:'completed',total:160},
+];
+let deleteTarget = null;
+
+function statusIcon(s){
+  if(s==='pending') return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+  return `<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+}
+
+function render(){
+  const list = document.getElementById('apt-list');
+  const sorted = [...appointments].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  list.innerHTML = sorted.map(a=>`
+    <div class="apt-item">
+      <div class="left">
+        <div class="status-icon ${a.status}">${statusIcon(a.status)}</div>
+        <div class="apt-info">
+          <h4>Appointment #${a.id}
+            <span class="badge ${a.status}">${statusIcon(a.status)} ${a.status.charAt(0).toUpperCase()+a.status.slice(1)}</span>
+          </h4>
+          <div class="meta">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ${a.date}
+            <span class="sep"></span>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ${a.time}
+            <span class="sep"></span>
+            ${a.customer}
+          </div>
+        </div>
+      </div>
+      <span class="apt-amount">RM ${a.total.toFixed(2)}</span>
+      <div class="apt-actions">
+        <button class="btn-view" onclick="window.location.href='viewAppointmentDetails.html'">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          View Details
+        </button>
+        <button class="btn-edit-action" onclick="window.location.href='editAppointment.html'">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="btn-del" onclick="openDelete('${a.id}','${a.customer}')">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function openDelete(id, name){
+  deleteTarget = id;
+  document.getElementById('delete-info').textContent = `Appointment #${id} — ${name}`;
+  document.getElementById('delete-modal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('delete-modal').classList.remove('open');
+  deleteTarget = null;
+}
+
+function confirmDelete(){
+  const i = appointments.findIndex(a => a.id === deleteTarget);
+  if(i > -1) appointments.splice(i, 1);
+  updateCounts();
+  render();
+  closeModal();
+}
+
+function updateCounts(){
+  document.getElementById('cnt-pending').textContent   = appointments.filter(a=>a.status==='pending').length;
+  document.getElementById('cnt-confirmed').textContent = appointments.filter(a=>a.status==='confirmed').length;
+  document.getElementById('cnt-completed').textContent = appointments.filter(a=>a.status==='completed').length;
+  document.getElementById('cnt-total').textContent     = appointments.length;
+}
+
+// Close modal when clicking backdrop
+document.getElementById('delete-modal').addEventListener('click', function(e){
+  if(e.target === this) closeModal();
+});
+
+render();
+</script>
+</body>
+</html>

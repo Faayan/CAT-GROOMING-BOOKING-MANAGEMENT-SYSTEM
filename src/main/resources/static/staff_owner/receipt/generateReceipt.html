@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meowy Groom - Generate Receipt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --purple-main: #4c1d95;
+            --purple-hover: #5b21b6;
+            --green-main: #10b981;
+            --green-bg: #ecfdf5;
+            --pink-border: #fbcfe8;
+            --gray-light: #f9fafb;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+            display: flex;
+        }
+
+        .logout-btn {
+            width: 100%;
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px;
+            background: none; border: none;
+            color: #dc2626; font-weight: 600; cursor: pointer; border-radius: 8px;
+        }
+
+        .logout-btn:hover { background: #fef2f2; }
+
+        /* MAIN CONTENT */
+        .main-content { margin-left: 256px; flex: 1; padding: 40px; }
+        .form-container { max-width: 1024px; margin: 0 auto; }
+
+        .header-actions { margin-bottom: 24px; }
+        .back-btn {
+            background: none; border: none; color: #7c3aed;
+            font-weight: 600; cursor: pointer; font-size: 1rem;
+        }
+
+        /* FORM CARD */
+        .form-card {
+            background: white; border-radius: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 32px;
+        }
+
+        .form-header {
+            display: flex; align-items: center; gap: 16px;
+            padding-bottom: 24px; border-bottom: 1px solid #e5e7eb; margin-bottom: 32px;
+        }
+
+        .header-icon {
+            width: 64px; height: 64px;
+            background: linear-gradient(to bottom right, #bbf7d0, #99f6e4);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #059669; font-size: 28px;
+        }
+
+        .form-header h2 { font-size: 1.5rem; margin-bottom: 4px; }
+        .form-header p { color: var(--text-muted); }
+
+        /* INPUTS */
+        .input-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 24px; margin-bottom: 32px;
+        }
+
+        .input-group label {
+            display: block; font-size: 0.875rem; color: #374151; margin-bottom: 8px;
+        }
+
+        .required { color: #ef4444; }
+
+        input, select {
+            width: 100%; padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px; font-size: 1rem;
+            outline: none; transition: 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--green-main);
+            box-shadow: 0 0 0 3px var(--green-bg);
+        }
+
+        /* ITEMS SECTION */
+        .items-section { margin-bottom: 32px; }
+
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-header label { font-size: 0.875rem; color: #374151; }
+
+        .add-item-btn {
+            background: var(--green-bg); color: #065f46;
+            border: none; padding: 6px 12px;
+            border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.875rem;
+        }
+
+        .item-row {
+            display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px;
+        }
+
+        .item-desc { flex: 1; }
+
+        .custom-desc { margin-top: 8px; }
+
+        .item-amount { width: 160px; position: relative; }
+
+        .currency {
+            position: absolute; left: 12px; top: 14px;
+            font-size: 0.875rem; color: #6b7280;
+        }
+
+        .item-amount input { padding-left: 44px; }
+
+        .remove-btn {
+            padding: 12px; background: #fee2e2; color: #b91c1c;
+            border: none; border-radius: 8px; cursor: pointer;
+        }
+
+        /* PAYMENT DISPLAY */
+        .payment-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 24px; margin-bottom: 32px;
+        }
+
+        .amount-input { position: relative; }
+
+        .prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.875rem; }
+
+        .amount-input input { padding-left: 44px; }
+
+        .change-display {
+            background: #f3f4f6; padding: 12px 16px;
+            border-radius: 8px; font-size: 1.5rem;
+            font-weight: 600; color: #059669;
+            line-height: 1; display: flex; align-items: center;
+            height: 50px;
+        }
+
+        /* SUMMARY */
+        .summary-box {
+            background: var(--gray-light); padding: 24px;
+            border-radius: 12px; margin-bottom: 32px;
+        }
+
+        .summary-box h4 {
+            margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+
+        .total-line {
+            border-top: 1px solid #d1d5db;
+            padding-top: 8px; margin-top: 8px; font-size: 1.125rem;
+        }
+
+        /* FOOTER BUTTONS */
+        .form-footer {
+            display: flex; gap: 16px;
+            padding-top: 24px; border-top: 1px solid #e5e7eb;
+        }
+
+        .btn-save {
+            flex: 1;
+            background: linear-gradient(to right, #10b981, #14b8a6);
+            color: white; border: none; padding: 14px;
+            border-radius: 8px; font-weight: 600;
+            cursor: pointer; font-size: 1rem;
+        }
+
+        .btn-cancel {
+            flex: 1; background: #d1d5db; color: #374151;
+            border: none; padding: 14px; border-radius: 8px;
+            font-weight: 600; cursor: pointer; font-size: 1rem;
+        }
+
+        /* UTILS */
+        .text-green { color: #059669; }
+        .text-blue { color: #2563eb; }
+        .text-purple { color: #7c3aed; }
+        .font-bold { font-weight: 700; }
+        .font-medium { font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <main class="main-content">
+        <div class="form-container">
+
+            <div class="header-actions">
+                <button class="back-btn">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+            </div>
+
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="header-icon">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div>
+                        <h2>Generate New Receipt</h2>
+                        <p>Create payment receipt for customer</p>
+                    </div>
+                </div>
+
+                <form class="receipt-form" id="receiptForm">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label><i class="fa-solid fa-user"></i> Customer <span class="required">*</span></label>
+                            <select required>
+                                <option value="Ali Ahmad">Ali Ahmad</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label><i class="fa-solid fa-file-invoice"></i> Link to Invoice (Optional)</label>
+                            <select>
+                                <option value="INV-2024-001">INV-2024-001 - RM 210.00</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label><i class="fa-solid fa-calendar"></i> Payment Date <span class="required">*</span></label>
+                            <input type="date" value="2026-01-08" required>
+                        </div>
+                        <div class="input-group">
+                            <label><i class="fa-solid fa-credit-card"></i> Payment Method <span class="required">*</span></label>
+                            <select required>
+                                <option value="online_banking">Online Banking</option>
+                                <option value="ewallet">E-Wallet</option>
+                                <option value="cash">Cash</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="items-section">
+                        <div class="section-header">
+                            <label>Items/Services <span class="required">*</span></label>
+                            <button type="button" class="add-item-btn" id="addItemBtn">
+                                <i class="fa-solid fa-plus"></i> Add Item
+                            </button>
+                        </div>
+
+                        <div id="itemsContainer">
+                            <!-- Item 1 -->
+                            <div class="item-row">
+                                <div class="item-desc">
+                                    <select>
+                                        <option selected>Long-hair Package</option>
+                                        <option>Lion Cut</option>
+                                        <option>Flea Removal</option>
+                                        <option>Medicated Shampoo + Scrubbing</option>
+                                    </select>
+                                </div>
+                                <div class="item-amount">
+                                    <span class="currency">RM</span>
+                                    <input type="number" class="item-price" placeholder="0.00" value="60.00" step="0.01" min="0">
+                                </div>
+                                <button type="button" class="remove-btn" onclick="removeItem(this)"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div class="item-row">
+                                <div class="item-desc">
+                                    <select>
+                                        <option>Long-hair Package</option>
+                                        <option selected>Lion Cut</option>
+                                        <option>Flea Removal</option>
+                                        <option>Medicated Shampoo + Scrubbing</option>
+                                    </select>
+                                </div>
+                                <div class="item-amount">
+                                    <span class="currency">RM</span>
+                                    <input type="number" class="item-price" placeholder="0.00" value="120.00" step="0.01" min="0">
+                                </div>
+                                <button type="button" class="remove-btn" onclick="removeItem(this)"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="item-row">
+                                <div class="item-desc">
+                                    <select>
+                                        <option>Long-hair Package</option>
+                                        <option>Lion Cut</option>
+                                        <option selected>Flea Removal</option>
+                                        <option>Medicated Shampoo + Scrubbing</option>
+                                    </select>
+                                </div>
+                                <div class="item-amount">
+                                    <span class="currency">RM</span>
+                                    <input type="number" class="item-price" placeholder="0.00" value="20.00" step="0.01" min="0">
+                                </div>
+                                <button type="button" class="remove-btn" onclick="removeItem(this)"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+
+                            <!-- Item 4 -->
+                            <div class="item-row">
+                                <div class="item-desc">
+                                    <select>
+                                        <option>Long-hair Package</option>
+                                        <option>Lion Cut</option>
+                                        <option>Flea Removal</option>
+                                        <option selected>Medicated Shampoo + Scrubbing</option>
+                                    </select>
+                                </div>
+                                <div class="item-amount">
+                                    <span class="currency">RM</span>
+                                    <input type="number" class="item-price" placeholder="0.00" value="10.00" step="0.01" min="0">
+                                </div>
+                                <button type="button" class="remove-btn" onclick="removeItem(this)"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-grid">
+                        <div class="input-group">
+                            <label><i class="fa-solid fa-money-bill-wave"></i> Amount Paid <span class="required">*</span></label>
+                            <div class="amount-input">
+                                <span class="prefix">RM</span>
+                                <input type="number" id="amountPaid" placeholder="0.00" value="210.00" step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Change</label>
+                            <div class="change-display" id="changeDisplay">RM 0.00</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-box">
+                        <h4>Payment Summary</h4>
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span class="font-medium" id="summarySubtotal">RM 210.00</span>
+                        </div>
+                        <div class="summary-row total-line">
+                            <span>Total:</span>
+                            <span class="text-green font-bold" id="summaryTotal">RM 210.00</span>
+                        </div>
+                        <div class="summary-row total-line">
+                            <span>Amount Paid:</span>
+                            <span class="text-blue font-bold" id="summaryPaid">RM 210.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Change:</span>
+                            <span class="text-purple font-bold" id="summaryChange">RM 0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="button" class="btn-save" onclick="window.location.href='mainReceipt.html'">
+                            Generate Receipt
+                        </button>
+                        <button type="button" class="btn-cancel" onclick="window.location.href='../invoice/mainInvoice.html'">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function fmt(val) {
+            return 'RM ' + parseFloat(val).toFixed(2);
+        }
+
+        function recalculate() {
+            const prices = document.querySelectorAll('.item-price');
+            let subtotal = 0;
+            prices.forEach(p => { subtotal += parseFloat(p.value) || 0; });
+
+            const paid = parseFloat(document.getElementById('amountPaid').value) || 0;
+            const change = paid - subtotal;
+
+            document.getElementById('changeDisplay').textContent = fmt(change >= 0 ? change : 0);
+            document.getElementById('summarySubtotal').textContent = fmt(subtotal);
+            document.getElementById('summaryTotal').textContent = fmt(subtotal);
+            document.getElementById('summaryPaid').textContent = fmt(paid);
+            document.getElementById('summaryChange').textContent = fmt(change >= 0 ? change : 0);
+        }
+
+        document.getElementById('itemsContainer').addEventListener('input', recalculate);
+        document.getElementById('amountPaid').addEventListener('input', recalculate);
+
+        document.getElementById('addItemBtn').addEventListener('click', function () {
+            const container = document.getElementById('itemsContainer');
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `
+                <div class="item-desc">
+                    <select>
+                        <option>Long-hair Package</option>
+                        <option>Lion Cut</option>
+                        <option>Flea Removal</option>
+                        <option>Medicated Shampoo + Scrubbing</option>
+                        <option>Custom Item</option>
+                    </select>
+                    <input type="text" placeholder="Item description" class="custom-desc">
+                </div>
+                <div class="item-amount">
+                    <span class="currency">RM</span>
+                    <input type="number" class="item-price" placeholder="0.00" value="0.00" step="0.01" min="0">
+                </div>
+                <button type="button" class="remove-btn" onclick="removeItem(this)"><i class="fa-solid fa-trash-can"></i></button>
+            `;
+            container.appendChild(row);
+            recalculate();
+        });
+
+        function removeItem(btn) {
+            btn.closest('.item-row').remove();
+            recalculate();
+        }
+
+        document.getElementById('receiptForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            alert('Receipt generated successfully!');
+        });
+
+        recalculate();
+    </script>
+
+</body>
+</html>

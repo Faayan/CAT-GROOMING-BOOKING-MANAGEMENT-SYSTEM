@@ -1,0 +1,1 @@
+web: jwebserver --port $PORT --directory src/main/resources/static

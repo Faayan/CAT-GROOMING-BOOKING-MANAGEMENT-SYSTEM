@@ -1,1 +1,1 @@
-web: jwebserver --port $PORT --directory src/main/resources/static
+web: java -Dserver.port=$PORT -jar target/simpleapp-1.0-SNAPSHOT.jar
